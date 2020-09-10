@@ -1,4 +1,4 @@
-#HexClock
+# HexClock
 First credit where credit is due. THis project was inspired by Mukesh Sankhla original project (See his video about it here [https://www.youtube.com/watch?v=iDJgYJqa-gg](https://www.youtube.com/watch?v=iDJgYJqa-gg)).
 However I like doing things my way even if in this case meant redesigning everything from scratch (especially the 3d model which was way to thick)
 
