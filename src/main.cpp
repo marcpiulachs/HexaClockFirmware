@@ -12,7 +12,8 @@
 #include "secret.h"
 #include "graphics.h"
 #include "animations/ani_startup_sequence.h"
-#include <animations/ani_color_fade.h>
+#include "animations/ani_color_fade.h"
+#include "animations/ani_breathing.h"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
@@ -26,6 +27,7 @@ CRGB output_buffer[NUM_LEDS];
 
 ani_startup_sequence animation_startup;
 ani_color_fade animation_color_fade(120);
+ani_breathing animation_breathing(150,50,false,180);
 
 time_t getNTPTime() {
     return timeClient.getEpochTime();
@@ -132,6 +134,7 @@ void setup() {
     }
 
     animation_color_fade.set_speed(10);
+    animation_breathing.set_speed(10);
 }
 
 void loop() {
@@ -140,7 +143,7 @@ void loop() {
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
-        animation_color_fade.run(annimation_buffer);
+        animation_breathing.run(annimation_buffer);
         display();
     }
 }
