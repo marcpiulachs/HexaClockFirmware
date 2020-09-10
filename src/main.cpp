@@ -14,6 +14,7 @@
 #include "animations/ani_startup_sequence.h"
 #include "animations/ani_color_fade.h"
 #include "animations/ani_breathing.h"
+#include "animations/ani_christmas.h"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
@@ -28,6 +29,7 @@ CRGB output_buffer[NUM_LEDS];
 ani_startup_sequence animation_startup;
 ani_color_fade animation_color_fade(120);
 ani_breathing animation_breathing(150,50,false,180);
+ani_christmas animation_christmas(120,CRGB(255,0,100),CRGB(200,0,20));
 
 time_t getNTPTime() {
     return timeClient.getEpochTime();
@@ -74,7 +76,9 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
 }
 void display() {
     time_t time = now();
-    display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
+    //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
+    CRGB color = CRGB(0,0,255);
+    display_time( hour(time), minute(time), color, color, color, color);
 
     for(int i=0; i<NUM_LEDS; i++) {
         if(time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) {
@@ -135,6 +139,7 @@ void setup() {
 
     animation_color_fade.set_speed(10);
     animation_breathing.set_speed(10);
+    animation_christmas.set_speed(10);
 }
 
 void loop() {
@@ -143,7 +148,7 @@ void loop() {
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
-        animation_breathing.run(annimation_buffer);
+        animation_christmas.run(annimation_buffer);
         display();
     }
 }
