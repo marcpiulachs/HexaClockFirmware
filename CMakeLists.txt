@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/animations/ani_color_fade.cpp src/animations/ani_color_fade.h src/animations/ani_breathing.cpp src/animations/ani_breathing.h src/animations/ani_common.cpp src/animations/ani_christmas.cpp src/animations/ani_christmas.h src/secret.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/sensors.cpp src/sensors.h)

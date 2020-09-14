@@ -8,9 +8,12 @@
 #include <NTPClient.h>
 #include <TimeLib.h>
 #include <WiFiUdp.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #include "secret.h"
 #include "graphics.h"
+#include "sensors.h"
 #include "animations/ani_startup_sequence.h"
 #include "animations/ani_color_fade.h"
 #include "animations/ani_breathing.h"
@@ -22,14 +25,16 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 #define NUM_LEDS 96
 #define DATA_PIN D5
 
+sensors device_sensors(2);
+
 CRGB time_buffer[NUM_LEDS];
 CRGB annimation_buffer[NUM_LEDS];
 CRGB output_buffer[NUM_LEDS];
 
 ani_startup_sequence animation_startup;
 ani_color_fade animation_color_fade(120);
-ani_breathing animation_breathing(150,50,false,180);
-ani_christmas animation_christmas(120,CRGB(255,0,100),CRGB(200,0,20));
+ani_breathing animation_breathing(255,50,false,200);
+ani_christmas animation_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
 
 time_t getNTPTime() {
     return timeClient.getEpochTime();
@@ -77,7 +82,7 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
 void display() {
     time_t time = now();
     //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
-    CRGB color = CRGB(0,0,255);
+    CRGB color = CRGB(150,120,170);
     display_time( hour(time), minute(time), color, color, color, color);
 
     for(int i=0; i<NUM_LEDS; i++) {
@@ -90,12 +95,15 @@ void display() {
     FastLED.show();
 }
 
-
 void setup() {
     Serial.begin(9600);
     FastLED.addLeds<WS2812B, DATA_PIN, GRB>(output_buffer, NUM_LEDS);
     FastLED.setBrightness(255);
     //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1000);
+
+    delay(5000);
+
+    device_sensors.begin();
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -137,18 +145,24 @@ void setup() {
         Serial.println("MDNS responder started");
     }
 
-    animation_color_fade.set_speed(10);
+    animation_color_fade.set_speed(100);
     animation_breathing.set_speed(10);
     animation_christmas.set_speed(10);
 }
 
+
 void loop() {
     EVERY_N_MILLISECONDS( 1000 ) {
         timeClient.update();
+        Serial.print("Sensor1 = ");
+        Serial.println(device_sensors.getSensorTemp1());
+        Serial.print("Sensor2 = ");
+        Serial.println(device_sensors.getSensorTemp2());
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
-        animation_christmas.run(annimation_buffer);
+        animation_breathing.run(annimation_buffer);
         display();
+        FastLED.setBrightness(200);
     }
 }

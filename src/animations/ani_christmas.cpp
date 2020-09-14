@@ -49,9 +49,8 @@ void ani_christmas::fall_flakes() {
     }
 }
 
+//TODO: Add brightness control
 void ani_christmas::run(CRGB *buffer) {
-    Serial.print(this->snowflake_count);
-    Serial.print(" ");
     //CRGB color_diff = CRGB(255-this->brightness,255-this->brightness,255-this->brightness);
     for (int i = 0; i < 22; ++i) {
         buffer[point_grass[i]-1] = CRGB(0,150,0);
@@ -64,7 +63,6 @@ void ani_christmas::run(CRGB *buffer) {
         this->fall_flakes();
         this->step_counter = 0;
     }
-    Serial.println(this->snowflake_count);
 
     this->step_counter += this->step_speed;
 

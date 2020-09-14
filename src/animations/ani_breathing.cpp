@@ -34,7 +34,6 @@ void ani_breathing::run(CRGB *buffer) {
         else
             this->circles_lumi_offset[i+1] = this->circles_lumi_offset[i] + 20;
     }
-    Serial.printf("%d\t%d\t%d\t%d\n",this->circles_lumi_offset[0],this->circles_lumi_offset[1],this->circles_lumi_offset[2],this->circles_lumi_offset[3]);
 
     if(this->circles_lumi_orientation) {
         this->circles_lumi_offset[0] += this->step_speed/10;
