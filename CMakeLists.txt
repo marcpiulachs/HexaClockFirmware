@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/sensors.cpp src/sensors.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/secret.cpp src/eeprom_functions.cpp src/eeprom_functions.h)

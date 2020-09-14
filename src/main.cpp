@@ -2,18 +2,18 @@
 
 #include <FastLED.h>
 #include <ESP8266WiFi.h>
-#include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include "stdint.h"
 #include <NTPClient.h>
 #include <TimeLib.h>
 #include <WiFiUdp.h>
 #include <OneWire.h>
-#include <DallasTemperature.h>
 
 #include "secret.h"
 #include "graphics.h"
 #include "sensors.h"
+#include "mqtt_functions.h"
+#include "eeprom_functions.h"
 #include "animations/ani_startup_sequence.h"
 #include "animations/ani_color_fade.h"
 #include "animations/ani_breathing.h"
@@ -79,14 +79,9 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
             time_buffer[ font_position[3][i] ] = CRGB::Black;
     }
 }
-void display() {
-    time_t time = now();
-    //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
-    CRGB color = CRGB(150,120,170);
-    display_time( hour(time), minute(time), color, color, color, color);
-
+void display(bool draw_time) {
     for(int i=0; i<NUM_LEDS; i++) {
-        if(time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) {
+        if( (time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) || !draw_time) {
             output_buffer[i] = annimation_buffer[i];
         } else {
             output_buffer[i] = time_buffer[i];
@@ -104,6 +99,8 @@ void setup() {
     delay(5000);
 
     device_sensors.begin();
+    mqtt_begin();
+    config_begin();
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -152,17 +149,32 @@ void setup() {
 
 
 void loop() {
+    mqtt_loop();
+
+    EVERY_N_MILLISECONDS( 5000 ) {
+        timeClient.update();
+        mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp1());
+        mqtt_sendfloat(mqtt_topics_send_temp2,device_sensors.getSensorTemp2());
+    }
+
     EVERY_N_MILLISECONDS( 1000 ) {
         timeClient.update();
-        Serial.print("Sensor1 = ");
-        Serial.println(device_sensors.getSensorTemp1());
-        Serial.print("Sensor2 = ");
-        Serial.println(device_sensors.getSensorTemp2());
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
-        animation_breathing.run(annimation_buffer);
-        display();
-        FastLED.setBrightness(200);
+        if(config_read_background_on()) {
+            animation_breathing.run(annimation_buffer);
+        } else {
+            fill_solid(annimation_buffer,NUM_LEDS,CRGB::Black);
+        }
+        if(config_read_time_on()) {
+            time_t time = now();
+            //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
+            CRGB color = CRGB(150,120,170);
+            display_time( hour(time), minute(time), color, color, color, color);
+        }
+
+        display(config_read_time_on());
+        FastLED.setBrightness(config_read_brightness());
     }
 }
