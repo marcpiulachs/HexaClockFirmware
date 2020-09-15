@@ -9,7 +9,18 @@ const char* mqtt_topics_send_temp1 = "hexclock/sensors/temp1";
 const char* mqtt_topics_send_temp2 = "hexclock/sensors/temp2";
 const char* mqtt_topics_on_off_back = "hexclock/onoff/background";
 const char* mqtt_topics_on_off_time = "hexclock/onoff/time";
+const char* mqtt_topics_on_off_all  = "hexclock/onoff/all";
 const char* mqtt_topics_brightness = "hexclock/brightness";
+const char* mqtt_topics_huesat     = "hexclock/hue";
+const char* mqtt_topics_effet      = "hexclock/effect";
+
+const char* mqtt_reports_on_off_all  = "hexclock/reports/onoff/all";
+const char* mqtt_reports_on_off_back = "hexclock/reports/onoff/background";
+const char* mqtt_reports_on_off_time = "hexclock/reports/onoff/time";
+const char* mqtt_reports_brightness  = "hexclock/reports/brightness";
+const char* mqtt_reports_huesat      = "hexclock/reports/hue";
+const char* mqtt_reports_effet       = "hexclock/reports/effect";
+
 
 WiFiClient mqtt_wifi_client;
 PubSubClient mqtt_client(mqtt_wifi_client);
@@ -30,6 +41,8 @@ void mqtt_reconnect() {
             Serial.println("Connected to mqtt");
 
             mqtt_client.publish("discover/advertise", clientId.c_str());
+            mqtt_report_current_config();
+
             mqtt_client.subscribe(mqtt_topics);
         } else {
             Serial.print("Failed to connect to mqtt server rc=");
@@ -45,13 +58,55 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     payload[length] = '\0';
 
     if(strcmp(topic,mqtt_topics_on_off_back) == 0) {
-        config_write_background_on(  strcmp((char *)payload,"on")==0  );
+        bool x = strcmp((char *)payload,"on")==0;
+        config_write_background_on(  x  );
+        mqtt_client.publish(mqtt_reports_on_off_back, x ? "on" : "off");
     }
     if(strcmp(topic,mqtt_topics_on_off_time) == 0) {
-        config_write_time_on(  strcmp((char *)payload,"on")==0  );
+        bool x = strcmp((char *)payload,"on")==0;
+        config_write_time_on(x);
+        mqtt_client.publish(mqtt_reports_on_off_time, x ? "on" : "off");
+    }
+    if(strcmp(topic,mqtt_topics_on_off_all) == 0) {
+        bool x = strcmp((char *)payload,"on")==0;
+        config_write_time_on(x);
+        config_write_background_on(x);
+        mqtt_client.publish(mqtt_reports_on_off_all, x ? "on" : "off");
+        mqtt_client.publish(mqtt_reports_on_off_back, x ? "on" : "off");
+        mqtt_client.publish(mqtt_reports_on_off_time, x ? "on" : "off");
     }
     if(strcmp(topic,mqtt_topics_brightness) == 0) {
-        config_write_brightness(  atoi( (char *)payload ) );
+        uint8_t x = atoi( (char *)payload );
+        config_write_brightness( x );
+        mqtt_client.publish(mqtt_reports_brightness, String(x).c_str());
+        if(x>0) {
+            mqtt_client.publish(mqtt_reports_on_off_all, "on");
+        }
+    }
+    if(strcmp(topic,mqtt_topics_huesat) == 0) {
+        float hue = 0;
+        float sat = 0;
+
+        sscanf((char*)payload, "%f,%f", &hue, &sat);
+        mqtt_client.publish(mqtt_reports_huesat, (String((uint8_t)hue)+","+String((uint8_t)sat)).c_str());
+
+        int hue_int = map((int)hue,0,360,0,255);
+        config_write_color_hue( (uint8_t)hue_int);
+        config_write_color_saturation( map((uint8_t)sat,0,100,0,255) );
+    }
+    if(strcmp(topic,mqtt_topics_effet) == 0) {
+        if(strcmp((char *)payload,"color_fade")==0) {
+            mqtt_client.publish(mqtt_reports_effet, "color_fade");
+            config_write_annimation(annimations::COLORFADE);
+        }
+        if(strcmp((char *)payload,"breathing")==0) {
+            mqtt_client.publish(mqtt_reports_effet, "breathing");
+            config_write_annimation(annimations::BREATHING);
+        }
+        if(strcmp((char *)payload,"christmas")==0) {
+            mqtt_client.publish(mqtt_reports_effet, "christmas");
+            config_write_annimation(annimations::CHRISTMAS);
+        }
     }
 }
 
@@ -59,6 +114,32 @@ void mqtt_sendfloat(const char* topic,float value) {
     char result[7];
     dtostrf(value, 4, 2, result);
     mqtt_client.publish(topic, result);
+}
+
+void mqtt_report_current_config() {
+    mqtt_client.publish(mqtt_reports_on_off_all, "on");
+    mqtt_client.publish(mqtt_reports_on_off_back,"on");
+    mqtt_client.publish(mqtt_reports_on_off_time,"on");
+    mqtt_client.publish(mqtt_reports_brightness, String(config_read_brightness()).c_str());
+    mqtt_client.publish(mqtt_reports_huesat,(
+                                String(map(config_read_color_hue(),0,255,0,360)) +","+ String(map(config_read_color_saturation(),0,255,0,100))
+    ).c_str());
+
+    switch (config_read_annimation()) {
+        case STARTUP_START:
+        case STARTUP_WIFI:
+            break;
+        case COLORFADE:
+            mqtt_client.publish(mqtt_reports_effet, "color_fade");
+            break;
+        case BREATHING:
+            mqtt_client.publish(mqtt_reports_effet, "breathing");
+            break;
+        case CHRISTMAS:
+            mqtt_client.publish(mqtt_reports_effet,"christmas");
+            break;
+    }
+
 }
 
 void mqtt_loop() {

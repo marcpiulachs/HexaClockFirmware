@@ -14,10 +14,7 @@
 #include "sensors.h"
 #include "mqtt_functions.h"
 #include "eeprom_functions.h"
-#include "animations/ani_startup_sequence.h"
-#include "animations/ani_color_fade.h"
-#include "animations/ani_breathing.h"
-#include "animations/ani_christmas.h"
+#include "annimation_manager.h"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
@@ -31,10 +28,14 @@ CRGB time_buffer[NUM_LEDS];
 CRGB annimation_buffer[NUM_LEDS];
 CRGB output_buffer[NUM_LEDS];
 
+/*
 ani_startup_sequence animation_startup;
 ani_color_fade animation_color_fade(120);
 ani_breathing animation_breathing(255,50,false,200);
 ani_christmas animation_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
+*/
+annimation_manager annimations_m;
+
 
 time_t getNTPTime() {
     return timeClient.getEpochTime();
@@ -96,19 +97,19 @@ void setup() {
     FastLED.setBrightness(255);
     //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1000);
 
-    delay(5000);
+    delay(1000);
 
     device_sensors.begin();
     mqtt_begin();
-    config_begin();
+    config_begin(true);
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
-            animation_startup.run(output_buffer);
+            annimations_m.run(output_buffer);
             FastLED.show();
         }
     }
-    animation_startup.setState(ani_startup_state::WIFI);
+    annimations_m.setAnnimation(annimations::STARTUP_WIFI);
 
 
     WiFi.mode(WIFI_STA);
@@ -117,7 +118,7 @@ void setup() {
 
     // Wait for connection
     while (WiFi.status() != WL_CONNECTED) {
-        animation_startup.run(output_buffer);
+        annimations_m.run(output_buffer);
         FastLED.show();
         delay(30);
     }
@@ -133,7 +134,7 @@ void setup() {
     setSyncProvider(getNTPTime);
     while(!forceTimeSync()) {
         EVERY_N_MILLISECONDS( 30 ) {
-            animation_startup.run(output_buffer);
+            annimations_m.run(output_buffer);
             FastLED.show();
         }
     }
@@ -142,9 +143,7 @@ void setup() {
         Serial.println("MDNS responder started");
     }
 
-    animation_color_fade.set_speed(100);
-    animation_breathing.set_speed(10);
-    animation_christmas.set_speed(10);
+    annimations_m.setAnnimation(annimations::BREATHING);
 }
 
 
@@ -162,8 +161,11 @@ void loop() {
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
+        annimations_m.setAnnimation(config_read_annimation());
+        annimations_m.updateColorForCurrentAnimation(CHSV(config_read_color_hue(),config_read_color_saturation(),config_read_brightness()));
+
         if(config_read_background_on()) {
-            animation_breathing.run(annimation_buffer);
+            annimations_m.run(annimation_buffer);
         } else {
             fill_solid(annimation_buffer,NUM_LEDS,CRGB::Black);
         }
