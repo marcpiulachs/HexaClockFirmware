@@ -6,7 +6,7 @@
 
 ani_breathing::ani_breathing(byte brightness, byte hue, bool inverted, byte strengh) {
     this->brightness = brightness;
-    this->current_hue = hue;
+    this->current_color.hue = hue;
     this->inverted = inverted;
     this->strengh = strengh;
 }
@@ -17,7 +17,7 @@ void ani_breathing::update_brightness(byte b) {
 }
 
 void ani_breathing::update_settings(byte hue, bool i, byte s) {
-    this->current_hue = hue;
+    this->current_color.hue = hue;
     this->inverted = i;
     this->strengh = s;
 }
@@ -51,17 +51,21 @@ void ani_breathing::run(CRGB *buffer) {
 
         switch (i) {
             case 3:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring3,CHSV(this->current_hue, 255, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer,sprite_ring3,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
                 break;
             case 2:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring2,CHSV(this->current_hue, 255, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer,sprite_ring2,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
                 break;
             case 1:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring1,CHSV(this->current_hue, 255, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer,sprite_ring1,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
                 break;
             case 0:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring0,CHSV(this->current_hue, 255, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer,sprite_ring0,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
                 break;
         }
     }
+}
+
+void ani_breathing::update_hs(CHSV color) {
+    this->current_color = color;
 }

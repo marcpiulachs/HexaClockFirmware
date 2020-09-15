@@ -10,9 +10,11 @@ class ani_breathing {
         void set_speed(byte speed);
         void update_brightness(byte brightness);
         void update_settings(byte hue, bool inverted, byte strengh);
+        void update_hs(CHSV color);
 
     private:
-        byte current_hue = 50;
+        CHSV current_color = CHSV(50,255,255);
+        //byte current_hue = 50;
         byte step_speed = 100;
         byte strengh = 180;
         byte brightness = 255;
