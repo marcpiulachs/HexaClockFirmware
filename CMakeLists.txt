@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/secret.cpp src/eeprom_functions.cpp src/eeprom_functions.h src/annimation_manager.cpp src/annimation_manager.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/secret.cpp src/eeprom_functions.cpp src/eeprom_functions.h src/annimation_manager.cpp src/annimation_manager.h src/animations/ani_fish.cpp src/animations/ani_fish.h)

@@ -33,6 +33,7 @@ void annimation_manager::setAnnimation(annimations annimation) {
             this->animation_christmas->set_speed(10);
             break;
     }
+
 }
 
 void annimation_manager::updateColorForCurrentAnimation(const CHSV& color) {

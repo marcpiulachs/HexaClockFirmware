@@ -537,10 +537,10 @@ annimation = BreathingColorAnnimation(hue=220,strenght=180,inverted=False)
 annimation.set_speed(10)
 annimation = ChristmasAnnimation()
 annimation.set_speed(10)
-#annimation = ScrollingAnnimation(orientation=False,color=Color(10,0,0), accent_color='b')
-#annimation.set_speed(100)
-#annimation = FishAnnimation(color=Color(255,0,0), accent_color='r')
-#annimation.set_speed(100)
+annimation = ScrollingAnnimation(orientation=False,color=Color(10,0,0), accent_color='b')
+annimation.set_speed(100)
+annimation = FishAnnimation(color=Color(255,0,0), accent_color='g')
+annimation.set_speed(100)
 
 		
 done=False

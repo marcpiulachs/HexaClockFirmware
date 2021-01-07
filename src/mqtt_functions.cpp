@@ -80,7 +80,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
         config_write_brightness( x );
         mqtt_client.publish(mqtt_reports_brightness, String(x).c_str());
         if(x>0) {
-            mqtt_client.publish(mqtt_reports_on_off_all, "on");
+            mqtt_client.publish(mqtt_reports_on_off_time, "on");
         }
     }
     if(strcmp(topic,mqtt_topics_huesat) == 0) {
@@ -108,6 +108,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
             config_write_annimation(annimations::CHRISTMAS);
         }
     }
+
 }
 
 void mqtt_sendfloat(const char* topic,float value) {
@@ -117,9 +118,10 @@ void mqtt_sendfloat(const char* topic,float value) {
 }
 
 void mqtt_report_current_config() {
-    mqtt_client.publish(mqtt_reports_on_off_all, "on");
-    mqtt_client.publish(mqtt_reports_on_off_back,"on");
-    mqtt_client.publish(mqtt_reports_on_off_time,"on");
+
+    mqtt_client.publish(mqtt_reports_on_off_all, config_read_background_on()&&config_read_time_on() ? "on" : "off");
+    mqtt_client.publish(mqtt_reports_on_off_back,config_read_background_on() ? "on" : "off");
+    mqtt_client.publish(mqtt_reports_on_off_time,config_read_time_on() ? "on" : "off");
     mqtt_client.publish(mqtt_reports_brightness, String(config_read_brightness()).c_str());
     mqtt_client.publish(mqtt_reports_huesat,(
                                 String(map(config_read_color_hue(),0,255,0,360)) +","+ String(map(config_read_color_saturation(),0,255,0,100))
