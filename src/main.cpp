@@ -173,7 +173,7 @@ void loop() {
             time_t time = now();
             //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
             CRGB color = CRGB(150,120,170);
-            display_time( hour(time), minute(time), color, color, color, color);
+            display_time( (hour(time)-1)%24, minute(time), color, color, color, color);
         }
 
         display(config_read_time_on());
