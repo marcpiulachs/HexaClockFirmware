@@ -16,14 +16,14 @@ class sensors {
     public:
         explicit sensors(byte onewire_bus);
         void begin();
-        float getSensorTemp1();
-        float getSensorTemp2();
+        float getSensorTemp();
+        //float getSensorTemp2();
 
     private:
         OneWire *oneWire;
         DallasTemperature *ds18b20;
-        DeviceAddress temp_sensor1{}, temp_sensor2{};
-        float temp1, temp2;
+        DeviceAddress sensor{};
+        float temperature;
 
         #ifdef DEBUG_HEXCLOCK
             void printAddress(DeviceAddress address);

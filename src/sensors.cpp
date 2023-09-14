@@ -13,24 +13,26 @@ sensors::sensors(byte onewire_bus) {
 void sensors::begin() {
     this->ds18b20->begin();
 
-    if (!this->ds18b20->getAddress(this->temp_sensor1, 0)){
+    if (!this->ds18b20->getAddress(this->sensor, 0)){
         #ifdef DEBUG_HEXCLOCK
             Serial.println("Unable to find address for Device 0");
         #endif
     }
+
+    /*
     if (!this->ds18b20->getAddress(this->temp_sensor2, 1)){
         #ifdef DEBUG_HEXCLOCK
             Serial.println("Unable to find address for Device 1");
         #endif
-    }
+    }*/
 
     #ifdef DEBUG_HEXCLOCK
-        Serial.print("Device 0 Address: "); printAddress(this->temp_sensor1); Serial.println();
-        Serial.print("Device 1 Address: "); printAddress(this->temp_sensor2); Serial.println();
+        Serial.print("Device 0 Address: "); printAddress(this->sensor); Serial.println();
+     //   Serial.print("Device 1 Address: "); printAddress(this->temp_sensor2); Serial.println();
     #endif
 
-    this->ds18b20->setResolution(this->temp_sensor1, TEMPERATURE_PRECISION);
-    this->ds18b20->setResolution(this->temp_sensor2, TEMPERATURE_PRECISION);
+    this->ds18b20->setResolution(this->sensor, TEMPERATURE_PRECISION);
+   // this->ds18b20->setResolution(this->temp_sensor2, TEMPERATURE_PRECISION);
 
     this->ds18b20->setWaitForConversion(false);
     this->ds18b20->requestTemperatures();
@@ -47,17 +49,11 @@ void sensors::printAddress(uint8_t *address) {
     }
 }
 
-float sensors::getSensorTemp1() {
+float sensors::getSensorTemp() {
     if (this->ds18b20->isConversionComplete()) {
-        this->temp1 = this->ds18b20->getTempC(this->temp_sensor1);
-        this->temp2 = this->ds18b20->getTempC(this->temp_sensor2);
+        this->temperature = this->ds18b20->getTempC(this->sensor);
+       // this->temp2 = this->ds18b20->getTempC(this->temp_sensor2);
         this->ds18b20->requestTemperatures();
     }
-    return this->temp1;
+    return this->temperature;
 }
-
-float sensors::getSensorTemp2() {
-    this->getSensorTemp1();
-    return this->temp2;
-}
-

@@ -27,8 +27,8 @@ byte get_pixel_id_from_xy(uint8_t x, uint8_t y) {
 }
 
 void fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color) {
-    for (int8 y = 0; y < 15; y++) {
-        for (int8 x = 7; x >= 0; x--) {
+    for (int y = 0; y < 15; y++) {
+        for (int x = 7; x >= 0; x--) {
             bool b = ((sprite[y] >> x) & 0x01);
             byte pix = get_pixel_id_from_xy(7 - x, y);
             if(pix != 255 && b)
@@ -40,8 +40,8 @@ void fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& col
 }
 
 void fill_buffer_with_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color) {
-    for (int8 y = 0; y < 15; y++) {
-        for (int8 x = 7; x >= 0; x--) {
+    for (int y = 0; y < 15; y++) {
+        for (int x = 7; x >= 0; x--) {
             bool b = ((sprite[y] >> x) & 0x01);
             byte pix = get_pixel_id_from_xy(7 - x, y);
             if(pix != 255 && b)

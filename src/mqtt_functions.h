@@ -23,13 +23,13 @@ extern const char* mqtt_topics_on_off_all;
 extern const char* mqtt_topics_brightness;
 extern const char* mqtt_topics_huesat;
 extern const char* mqtt_reports_huesat;
-extern const char* mqtt_topics_effet;
+extern const char* mqtt_topics_effect;
 
 extern const char* mqtt_reports_on_off_all;
 extern const char* mqtt_reports_on_off_back;
 extern const char* mqtt_reports_on_off_time;
 extern const char* mqtt_reports_brightness;
-extern const char* mqtt_reports_effet;
+extern const char* mqtt_reports_effect;
 
 extern WiFiClient espClient;
 extern PubSubClient client;

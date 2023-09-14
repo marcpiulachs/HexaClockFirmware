@@ -14,6 +14,7 @@
 #define EEPROM_ADDR_BACKGROUND_ON 0x02
 #define EEPROM_ADDR_TIME_ON 0x03
 #define EEPROM_ADDR_ANNIMATION 0x04
+#define EEPROM_ADDR_TEMP_ON 0x07
 
 #define EEPROM_ADDR_HUE 0x05
 #define EEPROM_ADDR_SAT 0x06
@@ -30,6 +31,9 @@ void    config_write_background_on(bool value);
 
 bool    config_read_time_on();
 void    config_write_time_on(bool value);
+
+bool    config_read_temp_on();
+void    config_write_temp_on(bool value);
 
 annimations config_read_annimation();
 void        config_write_annimation(annimations value);

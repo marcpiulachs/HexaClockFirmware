@@ -1,8 +1,8 @@
 //#define FASTLED_ALLOW_INTERRUPTS 0
 
 #include <FastLED.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
+#include <WiFi.h>
+#include <ESPmDNS.h>
 #include "stdint.h"
 #include <NTPClient.h>
 #include <TimeLib.h>
@@ -12,21 +12,30 @@
 #include "secret.h"
 #include "graphics.h"
 #include "sensors.h"
+#include "usb_power.h"
 #include "mqtt_functions.h"
 #include "eeprom_functions.h"
 #include "annimation_manager.h"
 
+//UsbPower usbPower;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
 #define NUM_LEDS 96
-#define DATA_PIN D5
+#define DATA_PIN 5
 
 sensors device_sensors(2);
 
 CRGB time_buffer[NUM_LEDS];
-CRGB annimation_buffer[NUM_LEDS];
+CRGB animation_buffer[NUM_LEDS];
 CRGB output_buffer[NUM_LEDS];
+
+const char* ssid;
+const char* password ;
+
+const char* mqtt_user;
+const char* mqtt_password;
+const char* mqtt_host;
 
 /*
 ani_startup_sequence animation_startup;
@@ -83,7 +92,7 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
 void display(bool draw_time) {
     for(int i=0; i<NUM_LEDS; i++) {
         if( (time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) || !draw_time) {
-            output_buffer[i] = annimation_buffer[i];
+            output_buffer[i] = animation_buffer[i];
         } else {
             output_buffer[i] = time_buffer[i];
         }
@@ -102,6 +111,7 @@ void setup() {
     device_sensors.begin();
     mqtt_begin();
     config_begin(true);
+    //usbPower.begin();
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -109,8 +119,8 @@ void setup() {
             FastLED.show();
         }
     }
+    
     annimations_m.setAnnimation(annimations::STARTUP_WIFI);
-
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -150,10 +160,15 @@ void setup() {
 void loop() {
     mqtt_loop();
 
-    EVERY_N_MILLISECONDS( 5000 ) {
+    //usbPower.loop();
+
+    EVERY_N_MINUTES(60) {
         timeClient.update();
-        mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp1());
-        mqtt_sendfloat(mqtt_topics_send_temp2,device_sensors.getSensorTemp2());
+    }
+
+    EVERY_N_MILLISECONDS( 5000 ) {
+        mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp());
+        //mqtt_sendfloat(mqtt_topics_send_temp2,device_sensors.getSensorTemp2());
     }
 
     EVERY_N_MILLISECONDS( 1000 ) {
@@ -161,14 +176,22 @@ void loop() {
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
+
+        uint8_t hue = config_read_color_hue();
+        uint8_t sat = config_read_color_saturation();
+        uint8_t brightness = config_read_brightness();
+
+        CHSV color = CHSV(hue,sat,brightness);
+
         annimations_m.setAnnimation(config_read_annimation());
-        annimations_m.updateColorForCurrentAnimation(CHSV(config_read_color_hue(),config_read_color_saturation(),config_read_brightness()));
+        annimations_m.updateColorForCurrentAnimation(color);
 
         if(config_read_background_on()) {
-            annimations_m.run(annimation_buffer);
+            annimations_m.run(animation_buffer);
         } else {
-            fill_solid(annimation_buffer,NUM_LEDS,CRGB::Black);
+            fill_solid(animation_buffer,NUM_LEDS,CRGB::Black);
         }
+        
         if(config_read_time_on()) {
             time_t time = now();
             //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
