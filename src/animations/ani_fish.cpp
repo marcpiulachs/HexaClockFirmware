@@ -4,7 +4,7 @@
 
 #include "ani_fish.h"
 
-ani_fish::ani_fish(byte brightness, bool orientation, CHSV color, char accent_color) {
+ani_fish::ani_fish(byte brightness, bool orientation, CHSV color, char accent_color) : Animation ("fish") {
     this->color = color;
     this->color.v = brightness;
     this->orientation = orientation;

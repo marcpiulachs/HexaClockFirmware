@@ -6,12 +6,11 @@
 
 byte point_grass[22] = { 21,20,18,19,17,16,14,15,13,28,7,8,9,10,11,12,6,5,4,3,2,1};
 
-ani_christmas::ani_christmas(byte brightness, const CRGB& flake_colors, const CRGB bg_color) {
+ani_christmas::ani_christmas(byte brightness, const CRGB& flake_colors, const CRGB bg_color) : Animation ("Christmas") {
     this->brightness = brightness;
     this->flake_colors = flake_colors;
     this->bg_color = bg_color;
 }
-
 
 void ani_christmas::set_speed(byte speed) {
     this->step_speed = speed;

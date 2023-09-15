@@ -5,9 +5,10 @@
 #ifndef HEXCLOCK_ANI_FISH_H
 #define HEXCLOCK_ANI_FISH_H
 
+#include "animation.h"
 #include "ani_common.h"
 
-class ani_fish {
+class ani_fish : public Animation {
     public:
         ani_fish(byte brightness, bool orientation, CHSV color, char accent_color);
         void run(CRGB* buffer);

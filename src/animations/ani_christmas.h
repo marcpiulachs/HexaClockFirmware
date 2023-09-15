@@ -5,11 +5,12 @@
 #ifndef HEXCLOCK_ANI_CHRISTMAS_H
 #define HEXCLOCK_ANI_CHRISTMAS_H
 
+#include "animation.h"
 #include "ani_common.h"
 
 extern byte points_grass[22];
 
-class ani_christmas {
+class ani_christmas : public Animation {
     public:
         ani_christmas(byte brightness, const CRGB& flake_colors, CRGB bg_color);
         void run(CRGB* buffer);

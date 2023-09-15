@@ -4,7 +4,7 @@
 
 #include "ani_color_fade.h"
 
-ani_color_fade::ani_color_fade(byte brightness) {
+ani_color_fade::ani_color_fade(byte brightness) : Animation ("Fade") {
     this->brightness = brightness;
 }
 

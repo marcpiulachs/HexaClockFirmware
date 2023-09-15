@@ -4,6 +4,9 @@
 
 #include "ani_startup_sequence.h"
 
+ani_startup_sequence::ani_startup_sequence() : Animation ("Startup") {
+}
+
 void ani_startup_sequence::run(CRGB *buffer) {
     if(this->state == ani_startup_state::START) {
         switch ( this->counter%4 ) {

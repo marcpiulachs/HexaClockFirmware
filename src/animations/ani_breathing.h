@@ -4,7 +4,7 @@
 #include "animation.h"
 #include "ani_common.h"
 
-class ani_breathing : Animation
+class ani_breathing : public Animation
 {
     public:
         ani_breathing(byte brightnes, byte hue, bool inverted, byte strengh);

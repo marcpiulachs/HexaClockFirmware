@@ -1,6 +1,7 @@
 #ifndef HEXCLOCK_ANI_STARTUP_SEQUENCE_H
 #define HEXCLOCK_ANI_STARTUP_SEQUENCE_H
 
+#include "animation.h"
 #include "ani_common.h"
 
 enum ani_startup_state {
@@ -9,8 +10,9 @@ enum ani_startup_state {
     WIFI_SETUP
 } typedef ani_startup_state;
 
-class ani_startup_sequence {
+class ani_startup_sequence : public Animation {
     public:
+        ani_startup_sequence();
         void run(CRGB* buffer);
         void setState(ani_startup_state state);
     private:

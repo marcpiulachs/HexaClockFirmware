@@ -1,3 +1,6 @@
+#ifndef _ANIMATION_H
+#define _ANIMATION_H
+
 #include <iostream>
 #include <string>
 
@@ -7,19 +10,32 @@ using namespace std;
 
 class Animation
 {
-private:
-    string type;
+    private:
+        string type;
 
-public:
-    Animation(const char * type) {type = type;}
+    public:
+        Animation(const char *type) 
+        {
+             type = type; 
+        }
 
-    virtual void run(CRGB* buffer);
-    virtual void set_speed(byte speed);
-    virtual void update_brightness(byte brightness);
+        virtual void run(CRGB* buffer);
+        
+        virtual void set_speed(byte speed)
+        {
+            // Empty implementation
+        }
 
-    // declare virtual function
-    virtual string getType()
-    {
-        return type;
-    }
+        virtual void update_brightness(byte brightness)
+        {
+            // Empty implementation
+        }
+
+        // declare virtual function
+        virtual string getType()
+        {
+            return type;
+        }
 };
+
+#endif
