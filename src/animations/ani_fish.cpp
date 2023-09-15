@@ -11,7 +11,7 @@ ani_fish::ani_fish(byte brightness, bool orientation, CHSV color, char accent_co
     this->accent_color = accent_color;
 }
 
-void ani_fish::update_hs(CHSV color) {
+void ani_fish::updateColor(CHSV color) {
     this->color.h = color.h;
     this->color.s = color.s;
 }
@@ -19,8 +19,6 @@ void ani_fish::update_hs(CHSV color) {
 void ani_fish::set_speed(byte speed) {
     this->speed = speed;
 }
-
-
 
 void ani_fish::run(CRGB *buffer) {
     if(this->stepper>300) {

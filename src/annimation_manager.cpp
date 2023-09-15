@@ -35,7 +35,7 @@ void annimation_manager::setAnnimation(annimations annimation) {
     }
 }
 
-void annimation_manager::updateColorForCurrentAnimation(const CHSV& color) {
+void annimation_manager::updateColor(const CHSV& color) {
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:
@@ -43,7 +43,7 @@ void annimation_manager::updateColorForCurrentAnimation(const CHSV& color) {
         case COLORFADE:
             break;
         case BREATHING:
-            this->animation_breathing->update_hs(color);
+            this->animation_breathing->updateColor(color);
             break;
         case CHRISTMAS:
             break;

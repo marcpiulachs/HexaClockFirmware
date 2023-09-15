@@ -1,16 +1,18 @@
 #ifndef HEXCLOCK_ANI_BREATHING_H
 #define HEXCLOCK_ANI_BREATHING_H
 
+#include "animation.h"
 #include "ani_common.h"
 
-class ani_breathing {
+class ani_breathing : Animation
+{
     public:
         ani_breathing(byte brightnes, byte hue, bool inverted, byte strengh);
         void run(CRGB* buffer);
         void set_speed(byte speed);
         void update_brightness(byte brightness);
         void update_settings(byte hue, bool inverted, byte strengh);
-        void update_hs(CHSV color);
+        void updateColor(CHSV color);
 
     private:
         CHSV current_color = CHSV(50,255,255);

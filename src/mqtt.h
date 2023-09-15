@@ -12,7 +12,7 @@
 #include <PubSubClient.h>
 #include <WiFiClient.h>
 #include "secret.h"
-#include "eeprom_functions.h"
+#include "config.h"
 
 extern const char* mqtt_topics;
 extern const char* mqtt_topics_send_temp1;
@@ -21,9 +21,14 @@ extern const char* mqtt_topics_on_off_back;
 extern const char* mqtt_topics_on_off_time;
 extern const char* mqtt_topics_on_off_all;
 extern const char* mqtt_topics_brightness;
-extern const char* mqtt_topics_huesat;
-extern const char* mqtt_reports_huesat;
+//extern const char* mqtt_topics_huesat;
+//extern const char* mqtt_reports_huesat;
+extern const char* mqtt_topics_hue;
+extern const char* mqtt_topics_sat;
 extern const char* mqtt_topics_effect;
+
+extern const char* mqtt_reports_hue;
+extern const char* mqtt_reports_sat;
 
 extern const char* mqtt_reports_on_off_all;
 extern const char* mqtt_reports_on_off_back;

@@ -4,10 +4,9 @@
 
 #include "sensors.h"
 
-sensors::sensors(byte onewire_bus) {
-    this->oneWire = new OneWire(onewire_bus);
+sensors::sensors(byte pin) {
+    this->oneWire = new OneWire(pin);
     this->ds18b20 = new DallasTemperature(this->oneWire);
-
 }
 
 void sensors::begin() {
@@ -32,13 +31,9 @@ void sensors::begin() {
     #endif
 
     this->ds18b20->setResolution(this->sensor, TEMPERATURE_PRECISION);
-   // this->ds18b20->setResolution(this->temp_sensor2, TEMPERATURE_PRECISION);
-
     this->ds18b20->setWaitForConversion(false);
     this->ds18b20->requestTemperatures();
 }
-
-
 
 void sensors::printAddress(uint8_t *address) {
     for (uint8_t i = 0; i < 8; i++)

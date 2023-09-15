@@ -4,22 +4,23 @@
 
 #include "ani_breathing.h"
 
-ani_breathing::ani_breathing(byte brightness, byte hue, bool inverted, byte strengh) {
+
+ani_breathing::ani_breathing(byte brightness, byte hue, bool inverted, byte strengh)  : Animation("Breathing") {
     this->brightness = brightness;
     this->current_color.hue = hue;
     this->inverted = inverted;
     this->strengh = strengh;
 }
 
-void ani_breathing::update_brightness(byte b) {
-    this->brightness = b;
+void ani_breathing::update_brightness(byte brightness) {
+    this->brightness = brightness;
 
 }
 
-void ani_breathing::update_settings(byte hue, bool i, byte s) {
+void ani_breathing::update_settings(byte hue, bool inverted, byte strengh) {
     this->current_color.hue = hue;
-    this->inverted = i;
-    this->strengh = s;
+    this->inverted = inverted;
+    this->strengh = strengh;
 }
 
 void ani_breathing::set_speed(byte speed) {
@@ -66,6 +67,6 @@ void ani_breathing::run(CRGB *buffer) {
     }
 }
 
-void ani_breathing::update_hs(CHSV color) {
+void ani_breathing::updateColor(CHSV color) {
     this->current_color = color;
 }

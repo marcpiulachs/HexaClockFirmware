@@ -24,7 +24,7 @@ class annimation_manager {
         annimation_manager();
         void setAnnimation(annimations annimation);
         void run(CRGB* buffer);
-        void updateColorForCurrentAnimation(const CHSV& color);
+        void updateColor(const CHSV& color);
 
     private:
         annimations current_animation;

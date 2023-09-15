@@ -1,10 +1,10 @@
-#include "usb_power.h"
+#include "usb.h"
 
 void UsbPower::begin()
 {
 }
 
-float AnalogReadV(int pin)
+float UsbPower::AnalogReadV(int pin)
 {
     // By default we have 11db (1/3.6) attenuation with 1.1V reference,
     // so full scale voltage range is 1.1*3.6 = 3.96. In reality it's
@@ -13,7 +13,7 @@ float AnalogReadV(int pin)
     return analogRead(pin) * 3.96f / 4096;
 }
 
-UsbCurrentAvailable DetermineMaxCurrent()
+UsbCurrentAvailable UsbPower::DetermineMaxCurrent()
 {
     // This function implements USB-C current advertisement detection.
     // Universal Serial Bus Type-C Cable and Connector Specification
@@ -97,7 +97,7 @@ void UsbPower::DisableLEDPower()
     digitalWrite(kLedMatrixPowerPin0, LOW);
 }
 
-uint8_t UsbPower::getBrightness()
+uint8_t UsbPower::getMaxBrightness()
 {
     return this->brightness;
 }

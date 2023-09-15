@@ -12,26 +12,26 @@
 #include "secret.h"
 #include "graphics.h"
 #include "sensors.h"
-#include "usb_power.h"
-#include "mqtt_functions.h"
-#include "eeprom_functions.h"
+#include "usb.h"
+#include "mqtt.h"
+#include "config.h"
 #include "annimation_manager.h"
 
-//UsbPower usbPower;
+UsbPower usbPower;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
+NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
 #define NUM_LEDS 96
 #define DATA_PIN 5
 
-sensors device_sensors(2);
+sensors device_sensors(1);
 
-CRGB time_buffer[NUM_LEDS];
-CRGB animation_buffer[NUM_LEDS];
-CRGB output_buffer[NUM_LEDS];
+CRGB time_buffer        [NUM_LEDS];
+CRGB animation_buffer   [NUM_LEDS];
+CRGB output_buffer      [NUM_LEDS];
 
 const char* ssid;
-const char* password ;
+const char* password;
 
 const char* mqtt_user;
 const char* mqtt_password;
@@ -47,11 +47,12 @@ annimation_manager annimations_m;
 
 
 time_t getNTPTime() {
-    return timeClient.getEpochTime();
+    return ntpClient.getEpochTime();
 }
+
 bool forceTimeSync()  {
         Serial.print("Forcing time sync! ");
-        timeClient.forceUpdate();
+        ntpClient.forceUpdate();
         setSyncInterval(0);
         time_t time = now();
         setSyncInterval(300);
@@ -89,7 +90,9 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
             time_buffer[ font_position[3][i] ] = CRGB::Black;
     }
 }
-void display(bool draw_time) {
+
+void display(bool draw_time) 
+{
     for(int i=0; i<NUM_LEDS; i++) {
         if( (time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) || !draw_time) {
             output_buffer[i] = animation_buffer[i];
@@ -111,7 +114,7 @@ void setup() {
     device_sensors.begin();
     mqtt_begin();
     config_begin(true);
-    //usbPower.begin();
+    usbPower.begin();
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -139,8 +142,8 @@ void setup() {
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
 
-    timeClient.begin();
-    timeClient.update();
+    ntpClient.begin();
+    ntpClient.update();
     setSyncProvider(getNTPTime);
     while(!forceTimeSync()) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -160,43 +163,48 @@ void setup() {
 void loop() {
     mqtt_loop();
 
-    //usbPower.loop();
+    usbPower.loop();
 
     EVERY_N_MINUTES(60) {
-        timeClient.update();
+        ntpClient.update();
     }
 
-    EVERY_N_MILLISECONDS( 5000 ) {
-        mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp());
+    //EVERY_N_MILLISECONDS( 5000 ) {
+        //mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp());
         //mqtt_sendfloat(mqtt_topics_send_temp2,device_sensors.getSensorTemp2());
-    }
+    //}
 
     EVERY_N_MILLISECONDS( 1000 ) {
-        timeClient.update();
+        ntpClient.update();
     }
 
     EVERY_N_MILLISECONDS( 13 ) {
 
         uint8_t hue = config_read_color_hue();
-        uint8_t sat = config_read_color_saturation();
+        uint8_t sat = config_read_color_sat();
         uint8_t brightness = config_read_brightness();
 
-        CHSV color = CHSV(hue,sat,brightness);
+        CHSV color = CHSV(hue, sat, brightness);
 
         annimations_m.setAnnimation(config_read_annimation());
-        annimations_m.updateColorForCurrentAnimation(color);
+        annimations_m.updateColor(color);
 
-        if(config_read_background_on()) {
+        if (config_read_background_on())
+        {
             annimations_m.run(animation_buffer);
-        } else {
-            fill_solid(animation_buffer,NUM_LEDS,CRGB::Black);
         }
-        
-        if(config_read_time_on()) {
+        else
+        {
+            // Turn off clock backgound
+            fill_solid(animation_buffer, NUM_LEDS, CRGB::Black);
+        }
+
+        if (config_read_time_on())
+        {
             time_t time = now();
-            //display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
-            CRGB color = CRGB(150,120,170);
-            display_time( (hour(time)-1)%24, minute(time), color, color, color, color);
+            // display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
+            CRGB color = CRGB(150, 120, 170);
+            display_time((hour(time) - 1) % 24, minute(time), color, color, color, color);
         }
 
         display(config_read_time_on());

@@ -37,6 +37,7 @@ constexpr int kOnboardLed0Pin = 32;
 constexpr int kOnboardLed1Pin = 33;
 
 constexpr int kMatrixSize = 96;
+
 constexpr float kMatrixMaxCurrent = kMatrixSize * 0.06f; // WS2812B: 60mA/LED
 constexpr float kMaxIdleCurrent = 0.5f; // Matrix + ESP32 idle
 
@@ -46,15 +47,17 @@ constexpr int kLedMatrixDataPin = 27;
 
 class UsbPower {
     public:
-        explicit UsbPower();
+        UsbPower() = default;
         void begin();
         void loop();
 
-        uint8_t getBrightness();
-        uint8_t brightness;
+        uint8_t getMaxBrightness();
+        float AnalogReadV(int pin);
+        UsbCurrentAvailable DetermineMaxCurrent();
     private:        
       void EnableLEDPower();
       void DisableLEDPower();
+      uint8_t brightness;
 };
 
 

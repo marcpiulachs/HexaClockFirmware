@@ -12,7 +12,7 @@ class ani_fish {
         ani_fish(byte brightness, bool orientation, CHSV color, char accent_color);
         void run(CRGB* buffer);
         void set_speed(byte speed);
-        void update_hs(CHSV color);
+        void updateColor(CHSV color);
 
     private:
         CHSV color = CHSV(0,255,255);
