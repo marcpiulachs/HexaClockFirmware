@@ -2,7 +2,6 @@
 #define HEXCLOCK_ANI_STARTUP_SEQUENCE_H
 
 #include "animation.h"
-#include "ani_common.h"
 
 enum ani_startup_state {
     START,

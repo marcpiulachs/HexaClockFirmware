@@ -2,7 +2,6 @@
 #define HEXCLOCK_ANI_COLOR_FADE_H
 
 #include "animation.h"
-#include "ani_common.h"
 
 class ani_color_fade : public Animation {
     public:

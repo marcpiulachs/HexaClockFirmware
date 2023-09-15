@@ -4,7 +4,9 @@
 
 #include "ani_startup_sequence.h"
 
-ani_startup_sequence::ani_startup_sequence() : Animation ("Startup") {
+ani_startup_sequence::ani_startup_sequence() : Animation ("Startup") 
+{
+
 }
 
 void ani_startup_sequence::run(CRGB *buffer) {

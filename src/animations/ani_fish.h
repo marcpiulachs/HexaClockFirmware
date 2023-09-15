@@ -6,7 +6,6 @@
 #define HEXCLOCK_ANI_FISH_H
 
 #include "animation.h"
-#include "ani_common.h"
 
 class ani_fish : public Animation {
     public:

@@ -6,7 +6,6 @@
 #define HEXCLOCK_ANI_CHRISTMAS_H
 
 #include "animation.h"
-#include "ani_common.h"
 
 extern byte points_grass[22];
 
@@ -29,6 +28,5 @@ class ani_christmas : public Animation {
         byte snowflake_count = 0;
         bool snowflake_matrix[15][8] = {};
 };
-
 
 #endif //HEXCLOCK_ANI_CHRISTMAS_H
