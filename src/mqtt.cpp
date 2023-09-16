@@ -6,8 +6,7 @@
 #include "esp_system.h"
 
 const char* mqtt_topics              = "hexclock/#";
-const char* mqtt_topics_send_temp1   = "hexclock/sensors/temp";
-//const char* mqtt_topics_send_temp2   = "hexclock/sensors/temp2";
+//const char* mqtt_topics_send_temp    = "hexclock/sensors/temp";
 const char* mqtt_topics_on_off_back  = "hexclock/onoff/back";
 const char* mqtt_topics_on_off_time  = "hexclock/onoff/time";
 const char* mqtt_topics_on_off_temp  = "hexclock/onoff/temp";
@@ -24,6 +23,7 @@ const char* mqtt_reports_on_off_time  = "hexclock/reports/onoff/time";
 const char* mqtt_reports_on_off_temp  = "hexclock/reports/onoff/temp";
 const char* mqtt_reports_on_off_alarm = "hexclock/reports/onoff/alarm";
 const char* mqtt_reports_brightness   = "hexclock/reports/brightness";
+const char* mqtt_reports_temp         = "hexclock/reports/temp";
 //const char* mqtt_reports_huesat      = "hexclock/reports/hue";
 const char* mqtt_reports_hue          = "hexclock/reports/hue";
 const char* mqtt_reports_sat          = "hexclock/reports/sat";
@@ -42,29 +42,41 @@ String getUniqueId()
 	return String(baseMacChr);
 }
 
-void mqtt_begin() {
+void mqtt_begin()
+{
     mqtt_client.setServer(mqtt_host, 1883);
     mqtt_client.setCallback(mqtt_callback);
 }
 
-void mqtt_reconnect() {
+void mqtt_reconnect()
+{
     Serial.println("mqtt_reconnect");
     delay(100);
-    while (!mqtt_client.connected()) {
+    while (!mqtt_client.connected())
+    {
         Serial.println("Attempting MQTT connection...");
 
+        char chipId[64];
+        snprintf(chipId, 64, "HexClock-%llX", ESP.getEfuseMac());
+
         String clientId = "HexClock-" + getUniqueId();
-        if (mqtt_client.connect(clientId.c_str(),mqtt_user, mqtt_password)) {
-            Serial.println("Connected to mqtt");
+        // const char* clientId2 = "HexaClock-" + ESP.ESP_getFlashChipId();
+
+        if (mqtt_client.connect(clientId.c_str(), mqtt_user, mqtt_password))
+        {
+            Serial.println("Connected to MQTT");
 
             mqtt_client.publish("discover/advertise", clientId.c_str());
-            mqtt_report_current_config();
+            mqtt_reportConfig();
 
             mqtt_client.subscribe(mqtt_topics);
-        } else {
+        }
+        else
+        {
             Serial.print("Failed to connect to mqtt server rc=");
             Serial.print(mqtt_client.state());
             Serial.println(" try again in 5 seconds");
+
             // Wait 5 seconds before retrying
             delay(5000);
         }
@@ -119,7 +131,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length)
         uint8_t brightness = atoi( (char *)payload );
         config_write_brightness( brightness );
         mqtt_client.publish(mqtt_reports_brightness, String(brightness).c_str());
-        if(brightness>0) {
+        if (brightness > 0)
+        {
             mqtt_client.publish(mqtt_reports_on_off_time, "on");
         }
     }
@@ -136,7 +149,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length)
         int sat_int = map((uint8_t)sat, 0, 100, 0, 255);
         mqtt_client.publish(mqtt_reports_sat, String(sat_int).c_str());
         config_write_color_sat((uint8_t)sat_int);
-    }        
+    }
     /*
     if (strcmp(topic, mqtt_topics_huesat) == 0)
     {
@@ -179,7 +192,12 @@ void mqtt_sendfloat(const char* topic,float value) {
     mqtt_client.publish(topic, result);
 }*/
 
-void mqtt_report_current_config() {
+void mqtt_reportTemperature(float value) 
+{
+    mqtt_client.publish(mqtt_reports_temp, String(value).c_str());
+}
+
+void mqtt_reportConfig() {
 
     mqtt_client.publish(mqtt_reports_on_off_all, config_read_background_on()&&config_read_time_on() ? "on" : "off");
     mqtt_client.publish(mqtt_reports_on_off_back,config_read_background_on() ? "on" : "off");
@@ -192,7 +210,8 @@ void mqtt_report_current_config() {
                                 String(map(config_read_color_hue(),0,255,0,360)) +","+ String(map(config_read_color_saturation(),0,255,0,100))
     ).c_str());*/
 
-    switch (config_read_annimation()) {
+    switch (config_read_annimation()) 
+    {
         case STARTUP_START:
         case STARTUP_WIFI:
             break;
@@ -208,9 +227,11 @@ void mqtt_report_current_config() {
     }
 }
 
-void mqtt_loop() {
-    if (!mqtt_client.connected()) {
-        mqtt_reconnect();
+void mqtt_loop()
+{
+    if (!mqtt_client.connected())
+    {
+            mqtt_reconnect();
     }
     mqtt_client.loop();
 }

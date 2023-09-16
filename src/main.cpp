@@ -1,9 +1,8 @@
-//#define FASTLED_ALLOW_INTERRUPTS 0
+#include "stdint.h"
 
 #include <FastLED.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
-#include "stdint.h"
 #include <NTPClient.h>
 #include <TimeLib.h>
 #include <WiFiUdp.h>
@@ -169,10 +168,9 @@ void loop() {
         ntpClient.update();
     }
 
-    //EVERY_N_MILLISECONDS( 5000 ) {
-        //mqtt_sendfloat(mqtt_topics_send_temp1,device_sensors.getSensorTemp());
-        //mqtt_sendfloat(mqtt_topics_send_temp2,device_sensors.getSensorTemp2());
-    //}
+    EVERY_N_MINUTES(5) {
+        mqtt_reportTemperature(device_sensors.getSensorTemp());
+    }
 
     EVERY_N_MILLISECONDS( 1000 ) {
         ntpClient.update();

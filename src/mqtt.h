@@ -42,9 +42,9 @@ extern PubSubClient client;
 extern void mqtt_begin();
 extern void mqtt_loop();
 
-extern void mqtt_sendfloat(const char* topic,float value);
+extern void mqtt_reportTemperature(float value);
 extern void mqtt_callback(char* topic, byte* payload, unsigned int length);
 extern void mqtt_reconnect();
-extern void mqtt_report_current_config();
+extern void mqtt_reportConfig();
 
 #endif //HEXCLOCK_MQTT_FUNCTIONS_H
