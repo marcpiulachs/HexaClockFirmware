@@ -5,29 +5,33 @@
 #include "mqtt.h"
 #include "esp_system.h"
 
-const char* mqtt_topics              = "hexclock/#";
-//const char* mqtt_topics_send_temp    = "hexclock/sensors/temp";
-const char* mqtt_topics_on_off_back  = "hexclock/onoff/back";
-const char* mqtt_topics_on_off_time  = "hexclock/onoff/time";
-const char* mqtt_topics_on_off_temp  = "hexclock/onoff/temp";
-const char* mqtt_topics_on_off_alarm = "hexclock/onoff/alarm";
-const char* mqtt_topics_on_off_all   = "hexclock/onoff/all";
-const char* mqtt_topics_brightness   = "hexclock/brightness";
-const char* mqtt_topics_hue          = "hexclock/hue";
-const char* mqtt_topics_sat          = "hexclock/sat";
-const char* mqtt_topics_effect       = "hexclock/effect";
+const char* mqtt_topics                 = "hexclock/#";
+const char* mqtt_topics_on_off_back     = "hexclock/onoff/back";
+const char* mqtt_topics_on_off_time     = "hexclock/onoff/time";
+const char* mqtt_topics_on_off_temp     = "hexclock/onoff/temp";
+const char* mqtt_topics_on_off_alarm    = "hexclock/onoff/alarm";
+const char* mqtt_topics_on_off_all      = "hexclock/onoff/all";
+const char* mqtt_topics_brightness      = "hexclock/brightness";
+const char* mqtt_topics_hue             = "hexclock/hue";
+const char* mqtt_topics_sat             = "hexclock/sat";
+const char* mqtt_topics_effect          = "hexclock/effect";
+const char* mqtt_topics_temp            = "hexclock/temp";
+const char* mqtt_topics_alarm_hour      = "hexclock/alarm/hour";
+const char* mqtt_topics_alarm_minute    = "hexclock/alarm/minute";
+const char* mqtt_topics_time_hour       = "hexclock/time/hour";
+const char* mqtt_topics_time_minute     = "hexclock/time/minute";
 
-const char* mqtt_reports_on_off_all   = "hexclock/reports/onoff/all";
-const char* mqtt_reports_on_off_back  = "hexclock/reports/onoff/background";
-const char* mqtt_reports_on_off_time  = "hexclock/reports/onoff/time";
-const char* mqtt_reports_on_off_temp  = "hexclock/reports/onoff/temp";
-const char* mqtt_reports_on_off_alarm = "hexclock/reports/onoff/alarm";
-const char* mqtt_reports_brightness   = "hexclock/reports/brightness";
-const char* mqtt_reports_temp         = "hexclock/reports/temp";
-//const char* mqtt_reports_huesat      = "hexclock/reports/hue";
-const char* mqtt_reports_hue          = "hexclock/reports/hue";
-const char* mqtt_reports_sat          = "hexclock/reports/sat";
-const char* mqtt_reports_effect       = "hexclock/reports/effect";
+const char* mqtt_reports_on_off_all     = "hexclock/reports/onoff/all";
+const char* mqtt_reports_on_off_back    = "hexclock/reports/onoff/background";
+const char* mqtt_reports_on_off_time    = "hexclock/reports/onoff/time";
+const char* mqtt_reports_on_off_temp    = "hexclock/reports/onoff/temp";
+const char* mqtt_reports_on_off_alarm   = "hexclock/reports/onoff/alarm";
+const char* mqtt_reports_brightness     = "hexclock/reports/brightness";
+const char* mqtt_reports_temp           = "hexclock/reports/temp";
+const char* mqtt_reports_time           = "hexclock/reports/time";
+const char* mqtt_reports_hue            = "hexclock/reports/hue";
+const char* mqtt_reports_sat            = "hexclock/reports/sat";
+const char* mqtt_reports_effect         = "hexclock/reports/effect";
 
 WiFiClient mqtt_wifi_client;
 PubSubClient mqtt_client(mqtt_wifi_client);
@@ -150,21 +154,26 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length)
         mqtt_client.publish(mqtt_reports_sat, String(sat_int).c_str());
         config_write_color_sat((uint8_t)sat_int);
     }
-    /*
-    if (strcmp(topic, mqtt_topics_huesat) == 0)
+    if (strcmp(topic, mqtt_topics_temp) == 0)
     {
-        float hue = 0;
-        float sat = 0;
 
-        sscanf((char *)payload, "%f,%f", &hue, &sat);
-        mqtt_client.publish(mqtt_reports_huesat, (String((uint8_t)hue) + "," + String((uint8_t)sat)).c_str());
+    }
+    if (strcmp(topic, mqtt_topics_time_hour) == 0)
+    {
 
-        int hue_int = map((int)hue, 0, 360, 0, 255);
-        config_write_color_hue((uint8_t)hue_int);
+    }
+    if (strcmp(topic, mqtt_topics_time_minute) == 0)
+    {
 
-        int sat_int = map((uint8_t)sat, 0, 100, 0, 255);
-        config_write_color_sat((uint8_t)sat_int);
-    }*/
+    }
+    if (strcmp(topic, mqtt_topics_alarm_hour) == 0)
+    {
+
+    }
+    if (strcmp(topic, mqtt_topics_alarm_minute) == 0)
+    {
+
+    }
     if (strcmp(topic, mqtt_topics_effect) == 0)
     {
         if (strcmp((char *)payload, "color_fade") == 0)
