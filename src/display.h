@@ -2,8 +2,8 @@
 // Created by samuel on 15/09/2020.
 //
 
-#ifndef HEXCLOCK_ANNIMATION_MANAGER_H
-#define HEXCLOCK_ANNIMATION_MANAGER_H
+#ifndef HEXCLOCK_DISPLAY_H
+#define HEXCLOCK_DISPLAY_H
 
 #include "animations/ani_startup_sequence.h"
 #include "animations/ani_color_fade.h"
@@ -19,9 +19,9 @@ enum annimations {
 } typedef annimations;
 
 
-class annimation_manager {
+class Display {
     public:
-        annimation_manager();
+        Display();
         void setAnnimation(annimations annimation);
         void run(CRGB* buffer);
         void updateColor(const CHSV& color);
@@ -35,4 +35,4 @@ class annimation_manager {
 };
 
 
-#endif //HEXCLOCK_ANNIMATION_MANAGER_H
+#endif //HEXCLOCK_DISPLAY_H

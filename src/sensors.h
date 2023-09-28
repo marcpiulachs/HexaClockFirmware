@@ -12,9 +12,9 @@
 
 #define TEMPERATURE_PRECISION 10
 
-class sensors {
+class Sensors {
     public:
-        explicit sensors(byte pin);
+        explicit Sensors(byte pin);
         void begin();
         float getSensorTemp();
     private:

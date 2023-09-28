@@ -2,10 +2,10 @@
 // Created by samuel on 15/09/2020.
 //
 
-#include "annimation_manager.h"
+#include "display.h"
 
-annimation_manager::annimation_manager() {
-    this->animation_startup    = new ani_startup_sequence;
+Display::Display() {
+    this->animation_startup    = new ani_startup_sequence();
     this->animation_color_fade = new ani_color_fade(120);
     this->animation_breathing  = new ani_breathing(255,50,false,200);
     this->animation_christmas  = new ani_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
@@ -14,7 +14,7 @@ annimation_manager::annimation_manager() {
     this->animation_startup->setState(ani_startup_state::START);
 }
 
-void annimation_manager::setAnnimation(annimations annimation) {
+void Display::setAnnimation(annimations annimation) {
     this->current_animation = annimation;
     switch (this->current_animation) {
         case STARTUP_START:
@@ -35,7 +35,7 @@ void annimation_manager::setAnnimation(annimations annimation) {
     }
 }
 
-void annimation_manager::updateColor(const CHSV& color) {
+void Display::updateColor(const CHSV& color) {
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:
@@ -50,7 +50,7 @@ void annimation_manager::updateColor(const CHSV& color) {
     }
 }
 
-void annimation_manager::run(CRGB * buffer) {
+void Display::run(CRGB * buffer) {
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:

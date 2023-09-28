@@ -14,7 +14,7 @@
 #include "usb.h"
 #include "mqtt.h"
 #include "config.h"
-#include "annimation_manager.h"
+#include "display.h"
 
 UsbPower usbPower;
 WiFiUDP ntpUDP;
@@ -23,7 +23,7 @@ NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 #define NUM_LEDS 96
 #define DATA_PIN 5
 
-sensors device_sensors(1);
+Sensors sensors(1);
 
 CRGB time_buffer        [NUM_LEDS];
 CRGB animation_buffer   [NUM_LEDS];
@@ -33,7 +33,7 @@ const char* ssid;
 const char* password;
 
 const char* mqtt_user;
-const char* mqtt_password;
+const char* mqtt_pass;
 const char* mqtt_host;
 
 /*
@@ -42,8 +42,7 @@ ani_color_fade animation_color_fade(120);
 ani_breathing animation_breathing(255,50,false,200);
 ani_christmas animation_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
 */
-annimation_manager annimations_m;
-
+Display display;
 
 time_t getNTPTime() {
     return ntpClient.getEpochTime();
@@ -66,7 +65,8 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
     uint16_t digitMinutes0 = font[minutes/10];
     uint16_t digitMinutes1 = font[minutes%10];
 
-    for(uint8_t i=0; i<10; i++) {
+    for(uint8_t i=0; i<10; i++) 
+    {
         if((digitHour0 >> (15-i)) & 0x01)
             time_buffer[ font_position[0][i] ] = color_hours_a;
         else
@@ -90,7 +90,7 @@ void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB
     }
 }
 
-void display(bool draw_time) 
+void display2(bool draw_time) 
 {
     for(int i=0; i<NUM_LEDS; i++) {
         if( (time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) || !draw_time) {
@@ -99,7 +99,6 @@ void display(bool draw_time)
             output_buffer[i] = time_buffer[i];
         }
     }
-    FastLED.show();
 }
 
 void setup() {
@@ -110,19 +109,19 @@ void setup() {
 
     delay(1000);
 
-    device_sensors.begin();
+    sensors.begin();
     mqtt_begin();
     config_begin(true);
     usbPower.begin();
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
-            annimations_m.run(output_buffer);
+            display.run(output_buffer);
             FastLED.show();
         }
     }
     
-    annimations_m.setAnnimation(annimations::STARTUP_WIFI);
+    display.setAnnimation(annimations::STARTUP_WIFI);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -130,7 +129,7 @@ void setup() {
 
     // Wait for connection
     while (WiFi.status() != WL_CONNECTED) {
-        annimations_m.run(output_buffer);
+        display.run(output_buffer);
         FastLED.show();
         delay(30);
     }
@@ -146,7 +145,7 @@ void setup() {
     setSyncProvider(getNTPTime);
     while(!forceTimeSync()) {
         EVERY_N_MILLISECONDS( 30 ) {
-            annimations_m.run(output_buffer);
+            display.run(output_buffer);
             FastLED.show();
         }
     }
@@ -155,7 +154,7 @@ void setup() {
         Serial.println("MDNS responder started");
     }
 
-    annimations_m.setAnnimation(annimations::BREATHING);
+    display.setAnnimation(annimations::BREATHING);
 }
 
 
@@ -169,7 +168,7 @@ void loop() {
     }
 
     EVERY_N_MINUTES(5) {
-        mqtt_reportTemperature(device_sensors.getSensorTemp());
+        mqtt_reportTemperature(sensors.getSensorTemp());
     }
 
     EVERY_N_MILLISECONDS( 1000 ) {
@@ -184,12 +183,12 @@ void loop() {
 
         CHSV color = CHSV(hue, sat, brightness);
 
-        annimations_m.setAnnimation(config_read_annimation());
-        annimations_m.updateColor(color);
+        display.setAnnimation(config_read_annimation());
+        display.updateColor(color);
 
         if (config_read_background_on())
         {
-            annimations_m.run(animation_buffer);
+            display.run(animation_buffer);
         }
         else
         {
@@ -205,7 +204,9 @@ void loop() {
             display_time((hour(time) - 1) % 24, minute(time), color, color, color, color);
         }
 
-        display(config_read_time_on());
+        display2(config_read_time_on());
+
+        FastLED.show();
         FastLED.setBrightness(config_read_brightness());
     }
 }

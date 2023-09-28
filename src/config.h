@@ -7,7 +7,7 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
-#include "annimation_manager.h"
+#include "display.h"
 
 #define EEPROM_ADDR_IS_SET 0x00
 #define EEPROM_ADDR_BRIGHTNESS 0x01

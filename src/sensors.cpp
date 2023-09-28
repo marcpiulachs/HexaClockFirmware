@@ -4,12 +4,12 @@
 
 #include "sensors.h"
 
-sensors::sensors(byte pin) {
+Sensors::Sensors(byte pin) {
     this->oneWire = new OneWire(pin);
     this->ds18b20 = new DallasTemperature(this->oneWire);
 }
 
-void sensors::begin() {
+void Sensors::begin() {
     this->ds18b20->begin();
 
     if (!this->ds18b20->getAddress(this->sensor, 0)){
@@ -35,7 +35,7 @@ void sensors::begin() {
     this->ds18b20->requestTemperatures();
 }
 
-void sensors::printAddress(uint8_t *address) {
+void Sensors::printAddress(uint8_t *address) {
     for (uint8_t i = 0; i < 8; i++)
     {
         // zero pad the address if necessary
@@ -44,7 +44,7 @@ void sensors::printAddress(uint8_t *address) {
     }
 }
 
-float sensors::getSensorTemp() {
+float Sensors::getSensorTemp() {
     if (this->ds18b20->isConversionComplete()) {
         this->temperature = this->ds18b20->getTempC(this->sensor);
        // this->temp2 = this->ds18b20->getTempC(this->temp_sensor2);

@@ -16,6 +16,7 @@ const char* mqtt_topics_hue             = "hexclock/hue";
 const char* mqtt_topics_sat             = "hexclock/sat";
 const char* mqtt_topics_effect          = "hexclock/effect";
 const char* mqtt_topics_temp            = "hexclock/temp";
+
 const char* mqtt_topics_alarm_hour      = "hexclock/alarm/hour";
 const char* mqtt_topics_alarm_minute    = "hexclock/alarm/minute";
 const char* mqtt_topics_time_hour       = "hexclock/time/hour";
@@ -66,7 +67,7 @@ void mqtt_reconnect()
         String clientId = "HexClock-" + getUniqueId();
         // const char* clientId2 = "HexaClock-" + ESP.ESP_getFlashChipId();
 
-        if (mqtt_client.connect(clientId.c_str(), mqtt_user, mqtt_password))
+        if (mqtt_client.connect(clientId.c_str(), mqtt_user, mqtt_pass))
         {
             Serial.println("Connected to MQTT");
 
@@ -238,9 +239,9 @@ void mqtt_reportConfig() {
 
 void mqtt_loop()
 {
-    if (!mqtt_client.connected())
-    {
+    if (!mqtt_client.connected()) {
             mqtt_reconnect();
     }
+    
     mqtt_client.loop();
 }
