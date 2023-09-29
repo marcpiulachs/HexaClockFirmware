@@ -17,6 +17,6 @@ void ani_color_fade::run(CRGB *buffer) {
     fill_solid(buffer, NUM_LEDS, CHSV((byte)this->current_hue, 255, this->brightness));
 }
 
-void ani_color_fade::set_speed(byte speed) {
+void ani_color_fade::setSpeed(byte speed) {
     this->step_speed = speed;
 }

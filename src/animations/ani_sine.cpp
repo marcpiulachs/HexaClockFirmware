@@ -16,7 +16,7 @@ ani_sine::ani_sine()  : Animation("Sine") {
 
 }
 
-void ani_sine::update_brightness(byte brightness) {
+void ani_sine::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 
@@ -26,7 +26,7 @@ void ani_sine::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_sine::set_speed(byte speed) {
+void ani_sine::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 

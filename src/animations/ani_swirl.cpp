@@ -13,7 +13,7 @@ ani_swirl::ani_swirl()  : Animation("Swirl") {
   
 }
 
-void ani_swirl::update_brightness(byte brightness) {
+void ani_swirl::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 
@@ -23,7 +23,7 @@ void ani_swirl::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_swirl::set_speed(byte speed) {
+void ani_swirl::setspeed(byte speed) {
     this->step_speed = speed;
 }
 

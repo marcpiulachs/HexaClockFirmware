@@ -3,37 +3,51 @@
 
 #include <iostream>
 #include <string>
+#include <Arduino.h>
+#include <FastLED.h>
+#include "graphics.h"
 
 using namespace std;
 
-#include <Arduino.h>
-#include <FastLED.h>
-
 #define NUM_ROWS 15
 #define NUM_COLS 8
+#define NUM_LEDS 96
 
-#define NUM_LEDS NUM_ROWS * NUM_COLS
-
-extern byte pixel_map[NUM_ROWS][NUM_COLS];
-
-byte get_pixel_id_from_xy(uint8_t x, uint8_t y);
-void fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color);
-void fill_buffer_with_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color);
-
-extern byte sprite_wifi0[15];
-extern byte sprite_wifi1[15];
-extern byte sprite_wifi2[15];
-extern byte sprite_wifi3[15];
-
-extern byte sprite_ring0[15];
-extern byte sprite_ring1[15];
-extern byte sprite_ring2[15];
-extern byte sprite_ring3[15];
+//extern byte pixel_map[NUM_ROWS][NUM_COLS];
 
 class Animation
 {
     private:
         string type;
+
+    protected:
+        byte speed;
+        byte brightness = 255;
+        CRGB background = CRGB::Black;
+        CRGB foreground = CRGB::White;
+ 
+        byte pixel_map[NUM_ROWS][NUM_COLS] = 
+        {
+            {0 ,0 ,0 ,95,96,0 ,0 ,0 },
+            {0 ,0 ,94,93,92,91,0 ,0 },
+            {0 ,85,86,87,88,89,90,0 },
+            {84,83,82,81,80,79,78,77},
+            {69,70,71,72,73,74,75,76},
+            {68,67,66,65,64,63,62,61},
+            {53,54,55,56,57,58,59,60},
+            {52,51,50,49,48,47,46,45},
+            {37,38,39,40,41,42,43,44},
+            {36,35,34,33,32,31,30,29},
+            {21,22,23,24,25,26,27,28},
+            {20,19,18,17,16,15,14,13},
+            {0 ,7 ,8 ,9 ,10,11,12,0 },
+            {0 ,0 ,6 ,5 ,4 ,3 ,0 ,0 },
+            {0 ,0 ,0 ,1 ,2 ,0 ,0 ,0 },
+        };
+
+        byte get_pixel_id_from_xy(uint8_t x, uint8_t y);
+        void fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color);
+        void fill_buffer_with_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color);
 
     public:
         Animation(const char *type) 
@@ -42,18 +56,37 @@ class Animation
         }
 
         virtual void run(CRGB* buffer);
-        
-        virtual void set_speed(byte speed)
+
+        virtual void setSpeed(byte speed)
         {
-            // Empty implementation
+           speed = speed;
         }
 
-        virtual void update_brightness(byte brightness)
+        virtual void setBrightness(byte brightness)
         {
-            // Empty implementation
+            this->brightness = brightness;
         }
 
-        // declare virtual function
+        virtual CRGB getBackcolor ()
+        {
+            return background;
+        }
+
+        virtual CRGB getForecolor ()
+        {
+            return foreground;
+        }
+
+        void setForegroundColor(CHSV color)
+        {
+            this->foreground = color;
+        }
+
+        void setBackgroundColor(CHSV color)
+        {
+            this->background = color;
+        }
+
         virtual string getType()
         {
             return type;

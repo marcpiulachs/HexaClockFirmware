@@ -29,19 +29,15 @@ CRGB time_buffer        [NUM_LEDS];
 CRGB animation_buffer   [NUM_LEDS];
 CRGB output_buffer      [NUM_LEDS];
 
+/* WiFi credentials */
 const char* ssid;
 const char* password;
 
+/* MQTT connection */
 const char* mqtt_user;
 const char* mqtt_pass;
 const char* mqtt_host;
 
-/*
-ani_startup_sequence animation_startup;
-ani_color_fade animation_color_fade(120);
-ani_breathing animation_breathing(255,50,false,200);
-ani_christmas animation_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
-*/
 Display display;
 
 time_t getNTPTime() {
@@ -150,13 +146,12 @@ void setup() {
         }
     }
 
-    if (MDNS.begin("HexClock")) {
+    if (MDNS.begin("HexaClock")) {
         Serial.println("MDNS responder started");
     }
 
     display.setAnnimation(annimations::BREATHING);
 }
-
 
 void loop() {
     mqtt_loop();
@@ -167,10 +162,11 @@ void loop() {
         ntpClient.update();
     }
 
+/*
     EVERY_N_MINUTES(5) {
         mqtt_reportTemperature(sensors.getSensorTemp());
     }
-
+*/
     EVERY_N_MILLISECONDS( 1000 ) {
         ntpClient.update();
     }

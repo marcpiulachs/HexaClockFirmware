@@ -13,7 +13,7 @@ ani_fire::ani_fire()  : Animation("Fire") {
   
 }
 
-void ani_fire::update_brightness(byte brightness) {
+void ani_fire::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 
@@ -23,7 +23,7 @@ void ani_fire::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_fire::set_speed(byte speed) {
+void ani_fire::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 

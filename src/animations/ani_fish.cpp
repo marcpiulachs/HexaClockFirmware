@@ -16,7 +16,7 @@ void ani_fish::updateColor(CHSV color) {
     this->color.s = color.s;
 }
 
-void ani_fish::set_speed(byte speed) {
+void ani_fish::setSpeed(byte speed) {
     this->speed = speed;
 }
 

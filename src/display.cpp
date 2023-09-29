@@ -24,13 +24,13 @@ void Display::setAnnimation(annimations annimation) {
             this->animation_startup->setState(ani_startup_state::WIFI);
             break;
         case COLORFADE:
-            this->animation_color_fade->set_speed(100);
+            this->animation_color_fade->setSpeed(100);
             break;
         case BREATHING:
-            this->animation_breathing->set_speed(10);
+            this->animation_breathing->setSpeed(10);
             break;
         case CHRISTMAS:
-            this->animation_christmas->set_speed(10);
+            this->animation_christmas->setSpeed(10);
             break;
     }
 }
@@ -50,7 +50,7 @@ void Display::updateColor(const CHSV& color) {
     }
 }
 
-void Display::run(CRGB * buffer) {
+void Display::run(CRGB* buffer) {
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:

@@ -7,7 +7,7 @@ class ani_color_fade : public Animation {
     public:
         ani_color_fade(byte brghtness);
         void run(CRGB* buffer);
-        void set_speed(byte speed);
+        void setSpeed(byte speed);
 
     private:
         float current_hue = 0.0;

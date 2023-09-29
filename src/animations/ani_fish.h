@@ -11,7 +11,7 @@ class ani_fish : public Animation {
     public:
         ani_fish(byte brightness, bool orientation, CHSV color, char accent_color);
         void run(CRGB* buffer);
-        void set_speed(byte speed);
+        void setSpeed(byte speed);
         void updateColor(CHSV color);
 
     private:

@@ -12,11 +12,11 @@ ani_christmas::ani_christmas(byte brightness, const CRGB& flake_colors, const CR
     this->bg_color = bg_color;
 }
 
-void ani_christmas::set_speed(byte speed) {
+void ani_christmas::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 
-void ani_christmas::update_brightness(byte brightness) {
+void ani_christmas::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 

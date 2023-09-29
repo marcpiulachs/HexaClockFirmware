@@ -10,7 +10,7 @@
 #define NUM_LEDS NUM_ROWS * NUM_COLS
 
 byte counter = 1;
-int speed = 1;
+//int speed = 1;
 
 ani_rain::ani_rain()  : Animation("Rain") {
     raininit();
@@ -42,7 +42,7 @@ uint16_t XY (uint8_t x, uint8_t y) {
   return (y * 96 + x);
 }
 
-void ani_rain::update_brightness(byte brightness) {
+void ani_rain::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 
@@ -52,7 +52,7 @@ void ani_rain::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_rain::set_speed(byte speed) {
+void ani_rain::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 

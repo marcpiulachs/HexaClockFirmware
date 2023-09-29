@@ -12,7 +12,7 @@ ani_breathing::ani_breathing(byte brightness, byte hue, bool inverted, byte stre
     this->strengh = strengh;
 }
 
-void ani_breathing::update_brightness(byte brightness) {
+void ani_breathing::setBrightness(byte brightness) {
     this->brightness = brightness;
 
 }
@@ -23,7 +23,7 @@ void ani_breathing::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_breathing::set_speed(byte speed) {
+void ani_breathing::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 
@@ -50,18 +50,19 @@ void ani_breathing::run(CRGB *buffer) {
         if(this->inverted)
             lumi = 255-this->circles_lumi_offset[i];
 
-        switch (i) {
+        switch (i)
+        {
             case 3:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring3,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer, sprite_ring3, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
                 break;
             case 2:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring2,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer, sprite_ring2, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
                 break;
             case 1:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring1,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer, sprite_ring1, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
                 break;
             case 0:
-                fill_buffer_with_sprite_without_override(buffer,sprite_ring0,CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi,255-this->brightness )));
+                fill_buffer_with_sprite_without_override(buffer, sprite_ring0, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
                 break;
         }
     }

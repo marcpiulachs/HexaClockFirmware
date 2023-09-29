@@ -13,7 +13,7 @@ ani_pride::ani_pride()  : Animation("Pride") {
   
 }
 
-void ani_pride::update_brightness(byte brightness) {
+void ani_pride::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
 
@@ -23,7 +23,7 @@ void ani_pride::update_settings(byte hue, bool inverted, byte strengh) {
     this->strengh = strengh;
 }
 
-void ani_pride::set_speed(byte speed) {
+void ani_pride::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 

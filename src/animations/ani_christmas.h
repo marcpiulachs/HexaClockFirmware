@@ -13,8 +13,8 @@ class ani_christmas : public Animation {
     public:
         ani_christmas(byte brightness, const CRGB& flake_colors, CRGB bg_color);
         void run(CRGB* buffer);
-        void set_speed(byte speed);
-        void update_brightness(byte brightness);
+        void setSpeed(byte speed);
+        void setBrightness(byte brightness);
 
     private:
         void spawn_flakes();

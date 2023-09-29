@@ -8,8 +8,8 @@ class ani_swirl : public Animation
     public:
         ani_swirl();
         void run(CRGB* buffer);
-        void set_speed(byte speed);
-        void update_brightness(byte brightness);
+        void setspeed(byte speed);
+        void setBrightness(byte brightness);
         void update_settings(byte hue, bool inverted, byte strengh);
         void updateColor(CHSV color);
 

@@ -3,7 +3,7 @@
 
 #include "animation.h"
 
-    static const uint16_t FibonPlanarTable[]={
+static const uint16_t FibonPlanarTable[]={
     256, 256, 256, 256, 256, 256, 256, 256, 247, 213, 234, 255, 256, 256, 256, 256, 256, 256, 256, 256,
     256, 256, 256, 256, 256, 239, 205, 226, 192, 256, 179, 200, 221, 242, 256, 256, 256, 256, 256, 256,
     256, 256, 256, 256, 218, 184, 256, 171, 137, 158, 124, 145, 166, 187, 208, 229, 256, 256, 256, 256,
@@ -23,28 +23,25 @@
     256, 256, 256, 233, 212, 157, 136, 115, 128, 107, 256, 120, 133, 167, 256, 180, 214, 256, 256, 256,
     256, 256, 256, 256, 256, 191, 170, 149, 256, 162, 141, 154, 188, 256, 201, 235, 256, 256, 256, 256,
     256, 256, 256, 256, 256, 246, 225, 204, 183, 196, 175, 209, 256, 222, 256, 256, 256, 256, 256, 256,
-    256, 256, 256, 256, 256, 256, 256, 238, 217, 251, 230, 256, 243, 256, 256, 256, 256, 256, 256, 256 };
-
-uint16_t XY_fibon(byte x, byte y) { 
-    return (FibonPlanarTable[y*20+x]);
-}
+    256, 256, 256, 256, 256, 256, 256, 238, 217, 251, 230, 256, 243, 256, 256, 256, 256, 256, 256, 256 
+};
 
 class ani_fibonacci : public Animation
 {
     public:
         ani_fibonacci();
         void run(CRGB* buffer);
-        void set_speed(byte speed);
-        void update_brightness(byte brightness);
-        void update_settings(byte hue, bool inverted, byte strengh);
-        void updateColor(CHSV color);
+        void setSpeed(byte speed);
+        //void update_brightness(byte brightness);
+        //void update_settings(byte hue, bool inverted, byte strengh);
+        //void updateColor(CHSV color);
 
     private:
         CHSV current_color = CHSV(50,255,255);
         //byte current_hue = 50;
         byte step_speed = 100;
         byte strengh = 180;
-        byte brightness = 255;
+        //byte brightness = 255;
         bool inverted = false;
 
         byte circles_lumi_offset[4] = {120,140,150,160};
