@@ -1,5 +1,5 @@
-#ifndef HEXCLOCK_ANI_RAIN_H
-#define HEXCLOCK_ANI_RAIN_H
+#ifndef HEXCLOCK_ANI_FIRE_H
+#define HEXCLOCK_ANI_FIRE_H
 
 #include "animation.h"
 
@@ -26,4 +26,4 @@ class ani_fire : public Animation
 };
 
 
-#endif //HEXCLOCK_ANI_RAIN_H
+#endif //HEXCLOCK_ANI_FIRE_H

@@ -28,6 +28,11 @@ extern byte sprite_ring1[15];
 extern byte sprite_ring2[15];
 extern byte sprite_ring3[15];
 
+extern byte sprite_wopr0[15];
+extern byte sprite_wopr1[15];
+extern byte sprite_wopr2[15];
+extern byte sprite_wopr3[15];
+
 /*
 byte sprite[15] = {
         0B00000000,

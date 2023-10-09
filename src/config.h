@@ -1,9 +1,5 @@
-//
-// Created by samuel on 14/09/2020.
-//
-
-#ifndef HEXCLOCK_EEPROM_FUNCTIONS_H
-#define HEXCLOCK_EEPROM_FUNCTIONS_H
+#ifndef _CONFIG_H
+#define _CONFIG_H
 
 #include <Arduino.h>
 #include <EEPROM.h>
@@ -16,35 +12,65 @@
 #define EEPROM_ADDR_ANNIMATION 0x04
 #define EEPROM_ADDR_TEMP_ON 0x07
 #define EEPROM_ADDR_ALARM_ON 0x08
-//#define EEPROM_ADDR_TEMP_ON 0x07
+// #define EEPROM_ADDR_TEMP_ON 0x07
 
 #define EEPROM_ADDR_HUE 0x05
 #define EEPROM_ADDR_SAT 0x06
+#define EEPROM_ADDR_WIFI_SET 0x7
+#define EEPROM_ADDR_CONF_SET 0x8
 
-void    config_begin(bool force_reset);
-void    config_reset();
+#define EEPROM_ADDR_WIFI 0x64
 
-uint8_t config_read_brightness();
-void    config_write_brightness(uint8_t value);
+typedef struct {
+    char ssid[64];
+    char pass[64];
+} wifiCredentials_t;
 
-bool    config_read_background_on();
-void    config_write_background_on(bool value);
+typedef struct {
+    uint8_t brightness;
+    bool background;
+    bool temp;
+    bool time;
+    bool alarm;
+    uint8_t sat;
+    uint8_t hue;
+    byte animation;
+} config_t;
 
-bool    config_read_time_on();
-void    config_write_time_on(bool value);
+class Config
+{
+public:
+    wifiCredentials_t wifiCredentials;
+    config_t config;
 
-bool    config_read_temp_on();
-void    config_write_temp_on(bool value);
+    void begin(bool force_reset);
+    void reset();
 
-bool    config_read_alarm_on();
-void    config_write_alarm_on(bool value);
+    uint8_t getBrightness();
+    void setBrightness(uint8_t value);
 
-annimations config_read_annimation();
-void        config_write_annimation(annimations value);
+    bool getBackgroundOn();
+    void setBackgroundOn(bool value);
 
-uint8_t config_read_color_hue();
-void    config_write_color_hue(uint8_t value);
-uint8_t config_read_color_sat();
-void    config_write_color_sat(uint8_t value);
+    bool getTimeOn();
+    void setTimeOn(bool value);
 
-#endif //HEXCLOCK_EEPROM_FUNCTIONS_H
+    bool getTempOn();
+    void setTempOn(bool value);
+
+    bool setAlarmOn();
+    void getAlarmOn(bool value);
+
+    annimations getAnimation();
+    void setAnimation(annimations value);
+
+    uint8_t getColorHue();
+    void setColorHue(uint8_t value);
+    uint8_t getColorSat();
+    void setColorSat(uint8_t value);
+
+    void SaveCredentials();
+    void ReadCredentials();
+};
+
+#endif //_CONFIG_H

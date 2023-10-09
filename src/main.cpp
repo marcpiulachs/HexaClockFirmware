@@ -15,13 +15,17 @@
 #include "mqtt.h"
 #include "config.h"
 #include "display.h"
+#include "network.h"
+#include "config.h"
 
+Config config;
+Network network;
 UsbPower usbPower;
 WiFiUDP ntpUDP;
 NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
 #define NUM_LEDS 96
-#define DATA_PIN 5
+#define DATA_PIN 27
 
 Sensors sensors(1);
 
@@ -98,16 +102,50 @@ void display2(bool draw_time)
 }
 
 void setup() {
+    
+      pinMode(25, OUTPUT);    // sets the digital pin 13 as output
+  pinMode(33, OUTPUT);    // sets the digital pin 13 as output
+  pinMode(26, OUTPUT);    // sets the digital pin 13 as output
+  pinMode(12, OUTPUT);    // sets the digital pin 13 as output
+
+
+    digitalWrite(25, HIGH);
+        digitalWrite(33, HIGH);
+      
+    // Enable 1.5A current to charge up the capacitances.
+    digitalWrite(26, HIGH);
+
+    delay(50 /* milliseconds */);
+
+    // Enable the second 1.5A switch to reduce switch resistance
+    // even if we only have 1.5A total, because we can limit it in
+    // firmware instead.
+    digitalWrite(12, HIGH);
+
+    // Make sure data pin is low so we don't latch up the LEDs.
+    digitalWrite(DATA_PIN, LOW);
+
     Serial.begin(9600);
     FastLED.addLeds<WS2812B, DATA_PIN, GRB>(output_buffer, NUM_LEDS);
-    FastLED.setBrightness(255);
+    FastLED.setBrightness(20);
     //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1000);
 
+    
+    // Enable 1.5A current to charge up the capacitances.
+    digitalWrite(26, HIGH);
+
+    delay(50 /* milliseconds */);
+
+    // Enable the second 1.5A switch to reduce switch resistance
+    // even if we only have 1.5A total, because we can limit it in
+    // firmware instead.
+    digitalWrite(12, HIGH);
+    
     delay(1000);
 
     sensors.begin();
     mqtt_begin();
-    config_begin(true);
+    config.begin(true);
     usbPower.begin();
 
     for (int i = 0; i < 10; ++i) {
@@ -116,8 +154,10 @@ void setup() {
             FastLED.show();
         }
     }
-    
-    display.setAnnimation(annimations::STARTUP_WIFI);
+
+//        display.setAnnimation(annimations::STARTUP_START);
+  //  delay(1000);
+    display.setAnnimation(annimations::PROTON);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -150,13 +190,27 @@ void setup() {
         Serial.println("MDNS responder started");
     }
 
-    display.setAnnimation(annimations::BREATHING);
+    display.setAnnimation(annimations::FISH);
 }
 
-void loop() {
-    mqtt_loop();
+void loop()
+{
+    /*
+    // if condition checks if push button is pressed    
+    int wifi_provisioning = digitalRead(0);
 
-    usbPower.loop();
+    // if pressed user wants to setup WiFi
+    if ( wifi_provisioning == HIGH )
+    {
+        // Starts the wifi provisioning routine
+        network.WiFiSetup();
+    }*/
+
+ Serial.println("running");
+
+    //mqtt_loop();
+
+    //usbPower.loop();
 
     EVERY_N_MINUTES(60) {
         ntpClient.update();
@@ -173,16 +227,16 @@ void loop() {
 
     EVERY_N_MILLISECONDS( 13 ) {
 
-        uint8_t hue = config_read_color_hue();
-        uint8_t sat = config_read_color_sat();
-        uint8_t brightness = config_read_brightness();
+        uint8_t hue = config.getColorHue();
+        uint8_t sat = config.getColorSat();
+        uint8_t brightness = config.getBrightness();
 
         CHSV color = CHSV(hue, sat, brightness);
 
-        display.setAnnimation(config_read_annimation());
+        display.setAnnimation(config.getAnimation());
         display.updateColor(color);
 
-        if (config_read_background_on())
+        if (config.getBackgroundOn())
         {
             display.run(animation_buffer);
         }
@@ -192,7 +246,7 @@ void loop() {
             fill_solid(animation_buffer, NUM_LEDS, CRGB::Black);
         }
 
-        if (config_read_time_on())
+        if (config.getTimeOn())
         {
             time_t time = now();
             // display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
@@ -200,9 +254,9 @@ void loop() {
             display_time((hour(time) - 1) % 24, minute(time), color, color, color, color);
         }
 
-        display2(config_read_time_on());
+        display2(config.getTimeOn());
 
         FastLED.show();
-        FastLED.setBrightness(config_read_brightness());
+        FastLED.setBrightness(config.getBrightness());
     }
 }

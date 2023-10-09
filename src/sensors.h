@@ -1,9 +1,6 @@
-//
-// Created by samuel on 14/09/2020.
-//
+#ifndef _SENSORS_H
+#define _SENSORS_H
 
-#ifndef HEXCLOCK_SENSORS_H
-#define HEXCLOCK_SENSORS_H
 #define DEBUG_HEXCLOCK
 
 #include <OneWire.h>
@@ -29,4 +26,4 @@ class Sensors {
 };
 
 
-#endif //HEXCLOCK_SENSORS_H
+#endif //_SENSORS_H

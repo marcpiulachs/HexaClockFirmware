@@ -2,8 +2,8 @@
 // Created by samuel on 14/09/2020.
 //
 
-#ifndef HEXCLOCK_MQTT_FUNCTIONS_H
-#define HEXCLOCK_MQTT_FUNCTIONS_H
+#ifndef _MQTT_FUNCTIONS_H
+#define _MQTT_FUNCTIONS_H
 
 #define DEBUG_HEXCLOCK
 #define MSG_BUFFER_SIZE	128
@@ -38,6 +38,7 @@ extern const char* mqtt_reports_effect;
 
 extern WiFiClient espClient;
 extern PubSubClient client;
+extern Config config;
 
 extern void mqtt_begin();
 extern void mqtt_loop();
@@ -47,4 +48,4 @@ extern void mqtt_callback(char* topic, byte* payload, unsigned int length);
 extern void mqtt_reconnect();
 extern void mqtt_reportConfig();
 
-#endif //HEXCLOCK_MQTT_FUNCTIONS_H
+#endif //_MQTT_FUNCTIONS_H

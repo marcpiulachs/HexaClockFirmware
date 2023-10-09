@@ -1,5 +1,6 @@
-#ifndef HEXCLOCK_USBPOWER_H
-#define HEXCLOCK_USBPOWER_H
+#ifndef _USBPOWER_H
+#define _USBPOWER_H
+
 #define DEBUG_HEXCLOCK
 
 #include <Arduino.h>
@@ -61,4 +62,4 @@ class UsbPower {
 };
 
 
-#endif //HEXCLOCK_USBPOWER_H
+#endif //_USBPOWER_H

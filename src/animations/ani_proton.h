@@ -1,19 +1,28 @@
-#ifndef HEXCLOCK_ANI_PRIDE_H
-#define HEXCLOCK_ANI_PRIDE_H
+#ifndef HEXCLOCK_ANI_PROTON_H
+#define HEXCLOCK_ANI_PROTON_H
 
 #include "animation.h"
 
-class ani_pride : public Animation
+class ani_proton : public Animation
 {
     public:
-        ani_pride();
+        ani_proton();
         void run(CRGB* buffer);
-        void setSpeed(byte speed);
+        void setspeed(byte speed);
         void setBrightness(byte brightness);
         void update_settings(byte hue, bool inverted, byte strengh);
         void updateColor(CHSV color);
 
     private:
+    uint16_t XY(uint8_t x, uint8_t y) {
+  if (x >= kMatrixWidth) return NUM_LEDS;
+  if (y >= kMatrixHeight) return NUM_LEDS;
+  return y * kMatrixWidth + x;
+}
+        const uint8_t kMatrixWidth  = 12;
+        const uint8_t kMatrixHeight = 8;
+        const uint8_t kBorderWidth = 0;
+
         CHSV current_color = CHSV(50,255,255);
         //byte current_hue = 50;
         byte step_speed = 100;
@@ -26,4 +35,4 @@ class ani_pride : public Animation
 };
 
 
-#endif //HEXCLOCK_ANI_PRIDE_H
+#endif //HEXCLOCK_ANI_PROTON_H

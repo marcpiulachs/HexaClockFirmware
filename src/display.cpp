@@ -1,36 +1,74 @@
-//
-// Created by samuel on 15/09/2020.
-//
-
 #include "display.h"
 
 Display::Display() {
-    this->animation_startup    = new ani_startup_sequence();
-    this->animation_color_fade = new ani_color_fade(120);
-    this->animation_breathing  = new ani_breathing(255,50,false,200);
-    this->animation_christmas  = new ani_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
-
-    this->current_animation = annimations::STARTUP_START;
-    this->animation_startup->setState(ani_startup_state::START);
 }
 
 void Display::setAnnimation(annimations annimation) {
     this->current_animation = annimation;
     switch (this->current_animation) {
         case STARTUP_START:
-            this->animation_startup->setState(ani_startup_state::START);
+            animation = new ani_startup_sequence();
+            //this->animation->setState(ani_startup_state::START);
             break;
         case STARTUP_WIFI:
-            this->animation_startup->setState(ani_startup_state::WIFI);
+            this->animation = new ani_wifi_connecting();
+            //this->animation->setState(ani_startup_state::WIFI);
             break;
         case COLORFADE:
-            this->animation_color_fade->setSpeed(100);
+            this->animation = new ani_color_fade(120);
+            this->animation->setSpeed(100);
             break;
         case BREATHING:
-            this->animation_breathing->setSpeed(10);
+            this->animation  = new ani_breathing(255,50,false,200);
+            this->animation->setSpeed(10);
             break;
         case CHRISTMAS:
-            this->animation_christmas->setSpeed(10);
+            this->animation = new ani_christmas(50,CRGB(255,0,100),CRGB(200,0,20));
+            this->animation->setSpeed(10);
+            break;
+        case FIBONACCI:
+            this->animation = new ani_fibonacci();
+            this->animation->setSpeed(10);
+            break;
+        case RAIN:
+            this->animation = new ani_rain();
+            this->animation->setSpeed(10);
+            break;
+        case FIRE:
+            this->animation = new ani_fire();
+            this->animation->setSpeed(10);
+            break;
+        case PRIDE:
+            this->animation = new ani_pride();
+            this->animation->setSpeed(10);
+            break;
+        case PLASMA:
+            this->animation = new ani_plasma();
+            this->animation->setSpeed(10);
+            break;
+        case SINE:
+            this->animation = new ani_sine();
+            this->animation->setSpeed(10);
+            break;
+        case SWIRL:
+            this->animation = new ani_swirl();
+            this->animation->setSpeed(10);
+            break;
+        case SETUP_WIFI:
+            this->animation = new ani_wifi_setup();
+            this->animation->setSpeed(10);
+            break;
+        case FISH:
+            this->animation = new ani_fish(50, true, CHSV(0,255,255), 'g');
+            this->animation->setSpeed(10);
+            break;
+        case WOPR:
+            this->animation = new ani_wopr();
+            this->animation->setSpeed(10);
+            break;
+        case PROTON:
+            this->animation = new ani_proton();
+            this->animation->setSpeed(10);
             break;
     }
 }
@@ -43,7 +81,7 @@ void Display::updateColor(const CHSV& color) {
         case COLORFADE:
             break;
         case BREATHING:
-            this->animation_breathing->updateColor(color);
+            //this->animation->updateColor(color);
             break;
         case CHRISTMAS:
             break;
@@ -51,19 +89,21 @@ void Display::updateColor(const CHSV& color) {
 }
 
 void Display::run(CRGB* buffer) {
+    this->animation->run(buffer);
+    /*
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:
-            this->animation_startup->run(buffer);
+            this->current_animation->run(buffer);
             break;
         case COLORFADE:
-            this->animation_color_fade->run(buffer);
+            this->current_animation->run(buffer);
             break;
         case BREATHING:
-            this->animation_breathing->run(buffer);
+            this->current_animation->run(buffer);
             break;
         case CHRISTMAS:
-            this->animation_christmas->run(buffer);
+            this->current_animation->run(buffer);
             break;
-    }
+    }*/
 }

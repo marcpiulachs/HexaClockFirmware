@@ -1,5 +1,5 @@
-#ifndef HEXCLOCK_ANI_WIFI_CONNECTING_H
-#define HEXCLOCK_ANI_WIFI_CONNECTING_H
+#ifndef HEXCLOCK_ANI_WIFI_SETUP_H
+#define HEXCLOCK_ANI_WIFI_SETUP_H
 
 #include "animation.h"
 
@@ -12,4 +12,4 @@ class ani_wifi_setup : public Animation {
 };
 
 
-#endif //HEXCLOCK_ANI_WIFI_CONNECTING_H
+#endif //HEXCLOCK_ANI_WIFI_SETUP_H

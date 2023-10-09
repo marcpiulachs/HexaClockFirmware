@@ -4,114 +4,127 @@
 
 #include "config.h"
 
-void config_begin(bool force_reset)
+void Config::begin(bool force_reset)
 {
     // Initialize EEPROM
     EEPROM.begin(512);
 
-    if (EEPROM.read(EEPROM_ADDR_IS_SET) == 143 || force_reset)
+    if ((EEPROM.read(EEPROM_ADDR_IS_SET) != HIGH) || force_reset)
     {
-        config_reset();
-        EEPROM.write(EEPROM_ADDR_IS_SET, 143);
+        reset();
+        EEPROM.write(EEPROM_ADDR_IS_SET, EEPROM_ADDR_CONF_SET);
         EEPROM.commit();
     }
 }
 
-void config_reset()
+void Config::SaveCredentials(void)
 {
-    config_write_brightness(150);
-    config_write_background_on(true);
-    config_write_time_on(true);
-    config_write_temp_on(false);
-    config_write_annimation(annimations::BREATHING);
-    config_write_color_hue(50);
-    config_write_color_sat(255);
+    EEPROM.put(EEPROM_ADDR_WIFI, wifiCredentials);
+    EEPROM.write(EEPROM_ADDR_WIFI_SET, HIGH);
+    EEPROM.commit();
 }
 
-uint8_t config_read_brightness()
+// reading credentials from EEPROM and savind it in struct
+void Config::ReadCredentials(void)
+{
+    EEPROM.get(EEPROM_ADDR_WIFI, wifiCredentials); 
+}
+
+void Config::reset()
+{
+    setBrightness(150);
+    setBackgroundOn(true);
+    setTimeOn(true);
+    setTempOn(false);
+    setAnimation(annimations::BREATHING);
+    setColorHue(50);
+    setColorSat(255);
+}
+
+uint8_t Config::getBrightness()
 {
     return EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
 }
 
-void config_write_brightness(uint8_t value)
+void Config::setBrightness(uint8_t value)
 {
     EEPROM.write(EEPROM_ADDR_BRIGHTNESS, value);
     EEPROM.commit();
 }
 
-bool config_read_background_on()
+bool Config::getBackgroundOn()
 {
     return EEPROM.read(EEPROM_ADDR_BACKGROUND_ON) == 1;
 }
 
-void config_write_background_on(bool value)
+void Config::setBackgroundOn(bool value)
 {
     EEPROM.write(EEPROM_ADDR_BACKGROUND_ON, value);
     EEPROM.commit();
 }
 
-bool config_read_time_on()
+bool Config::getTimeOn()
 {
     return EEPROM.read(EEPROM_ADDR_TIME_ON) == 1;
 }
 
-void config_write_time_on(bool value)
+void Config::setTimeOn(bool value)
 {
     EEPROM.write(EEPROM_ADDR_TIME_ON, value);
     EEPROM.commit();
 }
 
-void config_write_temp_on(bool value)
+void Config::setTempOn(bool value)
 {
     EEPROM.write(EEPROM_ADDR_TEMP_ON, value);
     EEPROM.commit();
 }
 
-void config_write_alarm_on(bool value)
+void Config::getAlarmOn(bool value)
 {
     EEPROM.write(EEPROM_ADDR_ALARM_ON, value);
     EEPROM.commit();
 }
 
-bool config_read_alarm_on()
+bool Config::setAlarmOn()
 {
     return EEPROM.read(EEPROM_ADDR_ALARM_ON) == 1;
 }
 
-bool config_read_temp_on()
+bool Config::getTempOn()
 {
     return EEPROM.read(EEPROM_ADDR_TEMP_ON) == 1;
 }
 
-annimations config_read_annimation()
+annimations Config::getAnimation()
 {
     annimations x = (annimations)EEPROM.read(EEPROM_ADDR_ANNIMATION);
     return x;
 }
 
-void config_write_annimation(annimations value)
+void Config::setAnimation(annimations value)
 {
     EEPROM.write(EEPROM_ADDR_ANNIMATION, (int)value);
     EEPROM.commit();
 }
 
-uint8_t config_read_color_hue()
+uint8_t Config::getColorHue()
 {
     return EEPROM.read(EEPROM_ADDR_HUE);
 }
 
-void config_write_color_hue(uint8_t value)
+void Config::setColorHue(uint8_t value)
 {
     EEPROM.write(EEPROM_ADDR_HUE, value);
     EEPROM.commit();
 }
 
-uint8_t config_read_color_sat()
+uint8_t Config::getColorSat()
 {
     return EEPROM.read(EEPROM_ADDR_SAT);
 }
 
-void config_write_color_sat(uint8_t value)
+void Config::setColorSat(uint8_t value)
 {
     EEPROM.write(EEPROM_ADDR_SAT, value);
     EEPROM.commit();

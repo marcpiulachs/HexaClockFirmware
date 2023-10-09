@@ -36,6 +36,7 @@ const char *mqtt_reports_effect = "/reports/effect";
 /* The unique clientId */
 char clientid[64];
 
+//Config config;
 WiFiClient mqtt_wifi_client;
 PubSubClient mqtt_client(mqtt_wifi_client);
 
@@ -96,35 +97,35 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_back)) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config_write_background_on(on);
+        config.setBackgroundOn(on);
         mqtt_client.publish(mqtt_reports_on_off_back, on ? "on" : "off");
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_time)) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config_write_time_on(on);
+        config.setTimeOn(on);
         mqtt_client.publish(mqtt_reports_on_off_time, on ? "on" : "off");
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_alarm)) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config_write_alarm_on(on);
+        config.getAlarmOn(on);
         mqtt_client.publish(mqtt_reports_on_off_alarm, on ? "on" : "off");
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_temp)) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config_write_temp_on(on);
+        config.setTempOn(on);
         mqtt_client.publish(mqtt_reports_on_off_temp, on ? "on" : "off");
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_all)) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
 
-        config_write_time_on(on);
-        config_write_background_on(on);
-        config_write_temp_on(on);
-        config_write_alarm_on(on);
+        config.setTimeOn(on);
+        config.setBackgroundOn(on);
+        config.setTempOn(on);
+        config.getAlarmOn(on);
 
         mqtt_client.publish(mqtt_reports_on_off_all, on ? "on" : "off");
         mqtt_client.publish(mqtt_reports_on_off_back, on ? "on" : "off");
@@ -135,7 +136,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
     if (strcmp(topic, strcat(clientid, mqtt_topics_brightness)) == 0)
     {
         uint8_t brightness = atoi((char *)payload);
-        config_write_brightness(brightness);
+        config.setBrightness(brightness);
         mqtt_client.publish(mqtt_reports_brightness, String(brightness).c_str());
         if (brightness > 0)
         {
@@ -147,14 +148,14 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
         float hue = atoi((char *)payload);
         int hue_int = map((int)hue, 0, 360, 0, 255);
         mqtt_client.publish(mqtt_reports_hue, String(hue_int).c_str());
-        config_write_color_hue((uint8_t)hue_int);
+        config.setColorHue((uint8_t)hue_int);
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_sat)) == 0)
     {
         float sat = atoi((char *)payload);
         int sat_int = map((uint8_t)sat, 0, 100, 0, 255);
         mqtt_client.publish(mqtt_reports_sat, String(sat_int).c_str());
-        config_write_color_sat((uint8_t)sat_int);
+        config.setColorSat((uint8_t)sat_int);
     }
     if (strcmp(topic, strcat(clientid, mqtt_topics_temp)) == 0)
     {
@@ -176,17 +177,17 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
         if (strcmp((char *)payload, "color_fade") == 0)
         {
             mqtt_client.publish(mqtt_reports_effect, "color_fade");
-            config_write_annimation(annimations::COLORFADE);
+            config.setAnimation(annimations::COLORFADE);
         }
         if (strcmp((char *)payload, "breathing") == 0)
         {
             mqtt_client.publish(mqtt_reports_effect, "breathing");
-            config_write_annimation(annimations::BREATHING);
+            config.setAnimation(annimations::BREATHING);
         }
         if (strcmp((char *)payload, "christmas") == 0)
         {
             mqtt_client.publish(mqtt_reports_effect, "christmas");
-            config_write_annimation(annimations::CHRISTMAS);
+            config.setAnimation(annimations::CHRISTMAS);
         }
     }
 }
@@ -205,18 +206,18 @@ void mqtt_reportTemperature(float value)
 
 void mqtt_reportConfig()
 {
-    mqtt_client.publish(mqtt_reports_on_off_all, config_read_background_on() && config_read_time_on() ? "on" : "off");
-    mqtt_client.publish(mqtt_reports_on_off_back, config_read_background_on() ? "on" : "off");
-    mqtt_client.publish(mqtt_reports_on_off_time, config_read_time_on() ? "on" : "off");
-    mqtt_client.publish(mqtt_reports_brightness, String(config_read_brightness()).c_str());
-    mqtt_client.publish(mqtt_reports_hue, String((map(config_read_color_hue(), 0, 255, 0, 360))).c_str());
-    mqtt_client.publish(mqtt_reports_sat, String((map(config_read_color_sat(), 0, 255, 0, 100))).c_str());
+    mqtt_client.publish(mqtt_reports_on_off_all, config.getBackgroundOn() && config.getTimeOn() ? "on" : "off");
+    mqtt_client.publish(mqtt_reports_on_off_back, config.getBackgroundOn() ? "on" : "off");
+    mqtt_client.publish(mqtt_reports_on_off_time, config.getTimeOn() ? "on" : "off");
+    mqtt_client.publish(mqtt_reports_brightness, String(config.getBrightness()).c_str());
+    mqtt_client.publish(mqtt_reports_hue, String((map(config.getColorHue(), 0, 255, 0, 360))).c_str());
+    mqtt_client.publish(mqtt_reports_sat, String((map(config.getColorSat(), 0, 255, 0, 100))).c_str());
     /*
         mqtt_client.publish(mqtt_reports_huesat,(
                                     String(map(config_read_color_hue(),0,255,0,360)) +","+ String(map(config_read_color_saturation(),0,255,0,100))
         ).c_str());*/
 
-    switch (config_read_annimation())
+    switch (config.getAnimation())
     {
         case STARTUP_START:
         case STARTUP_WIFI:
