@@ -8,11 +8,9 @@ void Display::setAnnimation(annimations annimation) {
     switch (this->current_animation) {
         case STARTUP_START:
             animation = new ani_startup_sequence();
-            //this->animation->setState(ani_startup_state::START);
             break;
         case STARTUP_WIFI:
             this->animation = new ani_wifi_connecting();
-            //this->animation->setState(ani_startup_state::WIFI);
             break;
         case COLORFADE:
             this->animation = new ani_color_fade(120);
@@ -73,7 +71,7 @@ void Display::setAnnimation(annimations annimation) {
     }
 }
 
-void Display::updateColor(const CHSV& color) {
+void Display::updateColor(const CHSV& color) {/*
     switch (this->current_animation) {
         case STARTUP_START:
         case STARTUP_WIFI:
@@ -85,25 +83,9 @@ void Display::updateColor(const CHSV& color) {
             break;
         case CHRISTMAS:
             break;
-    }
+    }*/
 }
 
 void Display::run(CRGB* buffer) {
     this->animation->run(buffer);
-    /*
-    switch (this->current_animation) {
-        case STARTUP_START:
-        case STARTUP_WIFI:
-            this->current_animation->run(buffer);
-            break;
-        case COLORFADE:
-            this->current_animation->run(buffer);
-            break;
-        case BREATHING:
-            this->current_animation->run(buffer);
-            break;
-        case CHRISTMAS:
-            this->current_animation->run(buffer);
-            break;
-    }*/
 }

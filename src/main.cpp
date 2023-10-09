@@ -103,15 +103,15 @@ void display2(bool draw_time)
 
 void setup() {
     
-      pinMode(25, OUTPUT);    // sets the digital pin 13 as output
-  pinMode(33, OUTPUT);    // sets the digital pin 13 as output
-  pinMode(26, OUTPUT);    // sets the digital pin 13 as output
-  pinMode(12, OUTPUT);    // sets the digital pin 13 as output
+    pinMode(32, OUTPUT);    // sets the digital pin 32 as output
+    pinMode(33, OUTPUT);    // sets the digital pin 33 as output
 
+    digitalWrite(32, HIGH);
+    digitalWrite(33, HIGH);
 
-    digitalWrite(25, HIGH);
-        digitalWrite(33, HIGH);
-      
+    pinMode(26, OUTPUT);    // sets the digital pin 26 as output
+    pinMode(12, OUTPUT);    // sets the digital pin 12 as output
+  
     // Enable 1.5A current to charge up the capacitances.
     digitalWrite(26, HIGH);
 
@@ -125,28 +125,17 @@ void setup() {
     // Make sure data pin is low so we don't latch up the LEDs.
     digitalWrite(DATA_PIN, LOW);
 
-    Serial.begin(9600);
     FastLED.addLeds<WS2812B, DATA_PIN, GRB>(output_buffer, NUM_LEDS);
     FastLED.setBrightness(20);
-    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1000);
-
+    FastLED.clear(true);
     
-    // Enable 1.5A current to charge up the capacitances.
-    digitalWrite(26, HIGH);
-
-    delay(50 /* milliseconds */);
-
-    // Enable the second 1.5A switch to reduce switch resistance
-    // even if we only have 1.5A total, because we can limit it in
-    // firmware instead.
-    digitalWrite(12, HIGH);
-    
-    delay(1000);
-
+    Serial.begin(9600);
     sensors.begin();
     mqtt_begin();
     config.begin(true);
     usbPower.begin();
+
+    display.setAnnimation(annimations::STARTUP_START);
 
     for (int i = 0; i < 10; ++i) {
         EVERY_N_MILLISECONDS( 30 ) {
@@ -155,21 +144,28 @@ void setup() {
         }
     }
 
-//        display.setAnnimation(annimations::STARTUP_START);
-  //  delay(1000);
-    display.setAnnimation(annimations::PROTON);
+    Serial.println("face");
+    display.setAnnimation(annimations::PLASMA);
 
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
+    WiFi.disconnect();
+    WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
     Serial.println("");
-
+Serial.println("face");
     // Wait for connection
-    while (WiFi.status() != WL_CONNECTED) {
-        display.run(output_buffer);
-        FastLED.show();
-        delay(30);
-    }
+    while (WiFi.status() != WL_CONNECTED) {       
 
+        display.run(animation_buffer);
+
+        display_time( 13, 00, CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
+        display2(true);
+        
+        FastLED.show();
+        delay(10);
+       // Serial.print('.');
+
+    }
+Serial.println("face");
     Serial.println("");
     Serial.print("Connected to ");
     Serial.println(ssid);
@@ -205,8 +201,6 @@ void loop()
         // Starts the wifi provisioning routine
         network.WiFiSetup();
     }*/
-
- Serial.println("running");
 
     //mqtt_loop();
 
@@ -257,6 +251,6 @@ void loop()
         display2(config.getTimeOn());
 
         FastLED.show();
-        FastLED.setBrightness(config.getBrightness());
+       // FastLED.setBrightness(config.getBrightness());
     }
 }
