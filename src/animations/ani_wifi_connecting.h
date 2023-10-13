@@ -6,7 +6,7 @@
 class ani_wifi_connecting : public Animation {
     public:
         ani_wifi_connecting();
-        void run(CRGB* buffer);
+        void drawBackground(CRGB* buffer);
     private:
         int16_t counter = 0;
 };

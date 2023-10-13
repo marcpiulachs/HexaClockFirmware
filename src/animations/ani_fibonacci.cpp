@@ -25,23 +25,23 @@ void ani_fibonacci::setSpeed(byte speed) {
 
 uint16_t XY_fibon(byte x, byte y)
 {
-    return (FibonPlanarTable[y * NUM_COLS + x]);
+    uint8_t physicalToFibonacci[NUM_LEDS] = { 0, 13, 26, 39, 52, 57, 44, 31, 18, 5, 10, 23, 36, 49, 62, 54, 41, 28, 15, 2, 7, 20, 33, 46, 59, 51, 38, 25, 12, 4, 17, 30, 43, 56, 61, 48, 35, 22, 9, 1, 14, 27, 40, 53, 58, 45, 32, 19, 6, 11, 24, 37, 50, 63, 55, 42, 29, 16, 3, 8, 21, 34, 47, 60 };
+
+    int led = (y*15+x);
+    if (led > NUM_LEDS)
+     return 0;
+
+    return physicalToFibonacci[led];
 }
 
-void ani_fibonacci::run(CRGB *buffer)
+void ani_fibonacci::drawBackground(CRGB *buffer)
 {
     uint16_t ms = millis();
-    for (byte j = 0; j < NUM_COLS; j++)
+    for (byte j = 0; j < NUM_ROWS; j++)
     {
-        for (byte i = 0; i < NUM_ROWS; i++)
+        for (byte i = 0; i < NUM_COLS; i++)
         {
-            buffer[XY_fibon(i, j)] = CHSV(i * 8 + j * 8 + ms / 16, 255, 255); // with palette
-            //buffer[XY_fibon(i, j)] = CHSV(sin8((i << 4) + ms / 6) / 2 + sin8((j << 4) + ms / 6) / 2, ~0, ~0);
+            buffer[XY_fibon(j, i)] = CHSV(i * 8 + j * 8 + ms / 16, 255, 255); // with palette
         }
     }
 }
-
-/*
-void ani_fibonacci::updateColor(CHSV color) {
-    this->current_color = color;
-}*/

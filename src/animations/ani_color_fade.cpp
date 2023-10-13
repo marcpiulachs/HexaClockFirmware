@@ -8,13 +8,13 @@ ani_color_fade::ani_color_fade(byte brightness) : Animation ("Fade") {
     this->brightness = brightness;
 }
 
-void ani_color_fade::run(CRGB *buffer) {
-    this->current_hue += this->step_speed / 100.0;
+void ani_color_fade::drawBackground(CRGB *buffer) {
+    this->hue += this->step_speed / 100.0;
     
-    if (this->current_hue > 255)
-        this->current_hue = 0;
+    if (this->hue > 255)
+        this->hue = 0;
 
-    fill_solid(buffer, NUM_LEDS, CHSV((byte)this->current_hue, 255, this->brightness));
+    fill_solid(buffer, NUM_LEDS, CHSV(this->hue, 255, this->brightness));
 }
 
 void ani_color_fade::setSpeed(byte speed) {

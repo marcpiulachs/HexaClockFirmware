@@ -9,7 +9,7 @@ ani_plasma::ani_plasma() : Animation ("Plasma")
 
 }
 
-void ani_plasma::run(CRGB *buffer) {
+void ani_plasma::drawBackground(CRGB *buffer) {
     // Fill background with dim plasma
     for (int16_t x = 0; x < NUM_COLS; x++) {
         for (int16_t y = 0; y < NUM_ROWS; y++) {

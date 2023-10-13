@@ -4,8 +4,6 @@
 
 #include "ani_christmas.h"
 
-byte point_grass[22] = { 21,20,18,19,17,16,14,15,13,28,7,8,9,10,11,12,6,5,4,3,2,1};
-
 ani_christmas::ani_christmas(byte brightness, const CRGB& flake_colors, const CRGB bg_color) : Animation ("Christmas") {
     this->brightness = brightness;
     this->flake_colors = flake_colors;
@@ -16,9 +14,10 @@ void ani_christmas::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 
+/*
 void ani_christmas::setBrightness(byte brightness) {
     this->brightness = brightness;
-}
+}*/
 
 void ani_christmas::spawn_flakes() {
     byte x = random8(7);
@@ -34,11 +33,11 @@ void ani_christmas::spawn_flakes() {
 }
 
 void ani_christmas::fall_flakes() {
-    for (int y = 12; y > 0; y--) {
-        for (int x = 0; x < 8; ++x) {
+    for (int y = NUM_ROWS; y > 0; y--) {
+        for (int x = 0; x < NUM_COLS; ++x) {
             if(this->snowflake_matrix[y-1][x] == true) {
                 this->snowflake_matrix[y-1][x] = false;
-                if(y<12)
+                if(y<NUM_ROWS)
                     this->snowflake_matrix[y][x] =true;
                 else
                     this->snowflake_count--;
@@ -49,11 +48,7 @@ void ani_christmas::fall_flakes() {
 }
 
 //TODO: Add brightness control
-void ani_christmas::run(CRGB *buffer) {
-    //CRGB color_diff = CRGB(255-this->brightness,255-this->brightness,255-this->brightness);
-    for (int i = 0; i < 22; ++i) {
-        buffer[point_grass[i]-1] = CRGB(0,150,0);
-    }
+void ani_christmas::drawBackground(CRGB *buffer) {
 
     while(this->snowflake_count<4)
         this->spawn_flakes();
@@ -65,8 +60,8 @@ void ani_christmas::run(CRGB *buffer) {
 
     this->step_counter += this->step_speed;
 
-    for (int y = 0; y < 12; ++y) {
-        for (int x = 0; x < 8; ++x) {
+    for (int y = 0; y < NUM_ROWS; ++y) {
+        for (int x = 0; x < NUM_COLS; ++x) {
             if(this->snowflake_matrix[y][x] == true)
                 buffer[pixel_map[y][x]-1] = this->flake_colors;
             else

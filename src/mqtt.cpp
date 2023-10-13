@@ -49,19 +49,21 @@ void GenerateClientId()
 void mqtt_begin()
 {
     GenerateClientId();
-    mqtt_client.setServer(mqtt_host, 1883);
+    mqtt_client.setServer(config.config.broker_host, 1883);
     mqtt_client.setCallback(mqtt_callback);
 }
 
 void mqtt_reconnect()
 {
-    Serial.println("mqtt_reconnect");
-    delay(100);
-    while (!mqtt_client.connected())
+    if (!mqtt_client.connected())
     {
         Serial.println("Attempting MQTT connection...");
+        Serial.println("Host:");
+        Serial.print(config.config.broker_host);
+        Serial.println();
         Serial.println("Client Id:");
         Serial.print(clientid);
+        Serial.println();
 
         // char chipId[64];
         // snprintf(chipId, 64, "HexClock-%llX", ESP.getEfuseMac());
@@ -69,7 +71,7 @@ void mqtt_reconnect()
         // String clientId = "HexClock-" + getUniqueId();
         //  const char* clientId2 = "HexaClock-" + ESP.ESP_getFlashChipId();
 
-        if (mqtt_client.connect(clientid, mqtt_user, mqtt_pass))
+        if (mqtt_client.connect(clientid, config.config.broker_user, config.config.broker_pass))
         {
             Serial.println("Connected to MQTT");
 
@@ -85,13 +87,14 @@ void mqtt_reconnect()
             Serial.println(" try again in 5 seconds");
 
             // Wait 5 seconds before retrying
-            delay(5000);
+            //delay(5000);
         }
     }
 }
 
 void mqtt_callback(char *topic, byte *payload, unsigned int length)
 {
+    Serial.println("MQTT");
     payload[length] = '\0';
 
     if (strcmp(topic, strcat(clientid, mqtt_topics_on_off_back)) == 0)
@@ -189,15 +192,38 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
             mqtt_client.publish(mqtt_reports_effect, "christmas");
             config.setAnimation(annimations::CHRISTMAS);
         }
+        if (strcmp((char *)payload, "wopr") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "wopr");
+            config.setAnimation(annimations::WOPR);
+        }
+        if (strcmp((char *)payload, "sine") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "sine");
+            config.setAnimation(annimations::SINE);
+        }
+        if (strcmp((char *)payload, "pride") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "pride");
+            config.setAnimation(annimations::PRIDE);
+        }
+        if (strcmp((char *)payload, "rain") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "rain");
+            config.setAnimation(annimations::RAIN);
+        }
+        if (strcmp((char *)payload, "fire") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "fire");
+            config.setAnimation(annimations::FIRE);
+        }
+        if (strcmp((char *)payload, "plasma") == 0)
+        {
+            mqtt_client.publish(mqtt_reports_effect, "plasma");
+            config.setAnimation(annimations::PLASMA);
+        }
     }
 }
-
-/*
-void mqtt_sendfloat(const char* topic,float value) {
-    char result[7];
-    dtostrf(value, 4, 2, result);
-    mqtt_client.publish(topic, result);
-}*/
 
 void mqtt_reportTemperature(float value)
 {
@@ -236,9 +262,12 @@ void mqtt_reportConfig()
 
 void mqtt_loop()
 {
+    /*
     if (!mqtt_client.connected()){
         mqtt_reconnect();
-    }
+    }*/
 
+  if (mqtt_client.connected()){
     mqtt_client.loop();
+  }
 }

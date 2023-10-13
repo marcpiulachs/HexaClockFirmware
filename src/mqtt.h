@@ -37,7 +37,7 @@ extern const char* mqtt_reports_brightness;
 extern const char* mqtt_reports_effect;
 
 extern WiFiClient espClient;
-extern PubSubClient client;
+extern PubSubClient mqtt_client;
 extern Config config;
 
 extern void mqtt_begin();

@@ -7,9 +7,9 @@ class ani_fire : public Animation
 {
     public:
         ani_fire();
-        void run(CRGB* buffer);
+        void drawBackground(CRGB* buffer);
         void setSpeed(byte speed);
-        void setBrightness(byte brightness);
+        //void setBrightness(byte brightness);
         void update_settings(byte hue, bool inverted, byte strengh);
         void updateColor(CHSV color);
 

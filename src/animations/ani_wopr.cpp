@@ -1,7 +1,3 @@
-//
-// Created by samuel on 08/09/2020.
-//
-
 #include "ani_wopr.h"
 
 ani_wopr::ani_wopr() : Animation ("Wopr") 
@@ -9,7 +5,7 @@ ani_wopr::ani_wopr() : Animation ("Wopr")
 
 }
 
-void ani_wopr::run(CRGB *buffer) {
+void ani_wopr::drawBackground(CRGB *buffer) {
     switch (this->counter % 4)
     {
         case 0:

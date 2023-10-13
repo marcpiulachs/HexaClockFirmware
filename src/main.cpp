@@ -18,10 +18,23 @@
 #include "network.h"
 #include "config.h"
 
+enum ani_startup_state {
+    NORMAL,
+    WIFI_SETUP,
+    BLUETOOTH_SETUP
+} typedef ani_startup_state;
+
+ani_startup_state state = ani_startup_state::NORMAL;
+
+bool wifi_connected = false;
+bool time_set = false;
+bool mqtt_connected = false;
+
 Config config;
 Network network;
 UsbPower usbPower;
 WiFiUDP ntpUDP;
+
 NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
 #define NUM_LEDS 96
@@ -131,104 +144,147 @@ void setup() {
     
     Serial.begin(9600);
     sensors.begin();
-    mqtt_begin();
+
     config.begin(true);
     usbPower.begin();
 
+    mqtt_begin();
+    
     display.setAnnimation(annimations::STARTUP_START);
-
-    for (int i = 0; i < 10; ++i) {
-        EVERY_N_MILLISECONDS( 30 ) {
-            display.run(output_buffer);
-            FastLED.show();
-        }
-    }
-
-    Serial.println("face");
-    display.setAnnimation(annimations::PLASMA);
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
-    Serial.println("");
-Serial.println("face");
-    // Wait for connection
-    while (WiFi.status() != WL_CONNECTED) {       
+    WiFi.begin("HDO_IoT", "Twister123");
+    Serial.println("Conecting to WIFI:");
 
-        display.run(animation_buffer);
-
-        display_time( 13, 00, CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
-        display2(true);
-        
-        FastLED.show();
-        delay(10);
-       // Serial.print('.');
-
-    }
-Serial.println("face");
-    Serial.println("");
-    Serial.print("Connected to ");
-    Serial.println(ssid);
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-
-    ntpClient.begin();
-    ntpClient.update();
-    setSyncProvider(getNTPTime);
+    /*
     while(!forceTimeSync()) {
         EVERY_N_MILLISECONDS( 30 ) {
             display.run(output_buffer);
             FastLED.show();
         }
     }
-
-    if (MDNS.begin("HexaClock")) {
-        Serial.println("MDNS responder started");
-    }
-
-    display.setAnnimation(annimations::FISH);
+    */
 }
 
 void loop()
-{
-    /*
-    // if condition checks if push button is pressed    
-    int wifi_provisioning = digitalRead(0);
-
-    // if pressed user wants to setup WiFi
-    if ( wifi_provisioning == HIGH )
+{   
+    bool complete = wifi_connected && time_set && mqtt_connected;
+    
+    EVERY_N_SECONDS(1) 
     {
-        // Starts the wifi provisioning routine
-        network.WiFiSetup();
-    }*/
+        // if condition checks if push button is pressed    
+        int wifi_provisioning = digitalRead(0);
 
-    //mqtt_loop();
+        // if pressed user wants to setup WiFi
+        if ( wifi_provisioning == LOW )
+        {
+            switch(state)
+            {
+                case NORMAL:
+                    state = ani_startup_state::WIFI_SETUP;
+                    break;
+                case WIFI_SETUP:
+                    state = ani_startup_state::BLUETOOTH_SETUP;
+                    break;
+                case BLUETOOTH_SETUP:
+                    state = ani_startup_state::NORMAL;
+                    break;
+            }
 
-    //usbPower.loop();
-
-    EVERY_N_MINUTES(60) {
-        ntpClient.update();
+            Serial.print("Button Press");
+            Serial.println();
+            // Starts the wifi provisioning routine
+            //network.WiFiSetup();
+        }
     }
 
-/*
-    EVERY_N_MINUTES(5) {
-        mqtt_reportTemperature(sensors.getSensorTemp());
+    // Wait for connection
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        // Wifi is not connected
+        wifi_connected = false;
+
+        // Wifi connecting
+        Serial.print('.');
     }
-*/
-    EVERY_N_MILLISECONDS( 1000 ) {
-        ntpClient.update();
+    else
+    {
+        if (!wifi_connected)
+        {
+            Serial.println("");
+            Serial.print("Connected to ");
+            Serial.println(ssid);
+            Serial.print("IP address: ");
+            Serial.println(WiFi.localIP());
+            wifi_connected = true;
+        }
+
+        if (!time_set)
+        {    
+            ntpClient.begin();
+            ntpClient.update();
+            setSyncProvider(getNTPTime);
+            time_set = true;
+        }
+
+        if (!mqtt_client.connected())
+        {
+            mqtt_connected = false;
+            EVERY_N_SECONDS(10) {
+                mqtt_reconnect();
+            }
+        }
+        else
+        {
+            if (!mqtt_connected)
+            {
+                Serial.print("MQTT Connected");
+                mqtt_connected = true;
+            }
+
+            mqtt_client.loop();
+        }
     }
 
-    EVERY_N_MILLISECONDS( 13 ) {
+    if (time_set)
+    {
+        EVERY_N_MINUTES(60) {
+            ntpClient.update();
+        }
+    }
+
+    if(state == ani_startup_state::NORMAL)
+    {
+        if (complete)
+        {
+            display.setAnnimation(annimations::WOPR);
+        }
+        else
+        {
+            display.setAnnimation(annimations::STARTUP_START);
+        }
+    }
+    else if (state == ani_startup_state::WIFI_SETUP)
+    {
+        display.setAnnimation(annimations::SETUP_WIFI);
+    }
+    else if (state == ani_startup_state::BLUETOOTH_SETUP)
+    {
+        display.setAnnimation(annimations::SETUP_BLUETOOTH);
+    }
+
+    EVERY_N_MILLISECONDS((config.config.speed * 10)) 
+    {
+       // Serial.println("RenderFrame");
+        //Serial.println(config.config.speed * 10);
+        //Serial.println();
 
         uint8_t hue = config.getColorHue();
         uint8_t sat = config.getColorSat();
         uint8_t brightness = config.getBrightness();
 
         CHSV color = CHSV(hue, sat, brightness);
-
-        display.setAnnimation(config.getAnimation());
-        display.updateColor(color);
 
         if (config.getBackgroundOn())
         {
@@ -240,17 +296,16 @@ void loop()
             fill_solid(animation_buffer, NUM_LEDS, CRGB::Black);
         }
 
-        if (config.getTimeOn())
+        if (config.getTimeOn() && complete)
         {
             time_t time = now();
-            // display_time( hour(time), minute(time), CRGB::Green, CRGB::Green, CRGB::Blue, CRGB::Blue);
             CRGB color = CRGB(150, 120, 170);
-            display_time((hour(time) - 1) % 24, minute(time), color, color, color, color);
+            display_time(hour(time) % 24, minute(time), color, color, color, color);
         }
 
-        display2(config.getTimeOn());
-
+        display2(true);
+        
         FastLED.show();
-       // FastLED.setBrightness(config.getBrightness());
-    }
+        FastLED.setBrightness(config.config.brightness);
+    } 
 }

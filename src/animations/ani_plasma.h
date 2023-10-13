@@ -6,7 +6,7 @@
 class ani_plasma : public Animation {
     public:
         ani_plasma();
-        void run(CRGB* buffer);
+        void drawBackground(CRGB* buffer);
     private:
     uint16_t _plasmaShift = (random8(0, 5) * 32) + 64;
     uint16_t _plasmaTime = 0;

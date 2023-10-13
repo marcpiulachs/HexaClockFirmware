@@ -12,10 +12,10 @@ ani_breathing::ani_breathing(byte brightness, byte hue, bool inverted, byte stre
     this->strengh = strengh;
 }
 
+/*
 void ani_breathing::setBrightness(byte brightness) {
     this->brightness = brightness;
-
-}
+}*/
 
 void ani_breathing::update_settings(byte hue, bool inverted, byte strengh) {
     this->current_color.hue = hue;
@@ -27,7 +27,7 @@ void ani_breathing::setSpeed(byte speed) {
     this->step_speed = speed;
 }
 
-void ani_breathing::run(CRGB *buffer) {
+void ani_breathing::drawBackground(CRGB *buffer) {
     for (int i = 0; i < 3; ++i) {
         byte a = this->circles_lumi_offset[i] + 20;
         if(a < 50) //NB: 100 is arbitrary just need to detect the overflow

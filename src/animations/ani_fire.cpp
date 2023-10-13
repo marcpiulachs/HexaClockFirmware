@@ -4,19 +4,19 @@
 
 #include "ani_fire.h"
 
-#define NUM_ROWS 15
-#define NUM_COLS 8
-#define BRIGHTNESS 255
-#define NUM_LEDS NUM_ROWS * NUM_COLS
+//#define NUM_ROWS 15
+//#define NUM_COLS 8
+//#define BRIGHTNESS 255
+//#define NUM_LEDS NUM_ROWS * NUM_COLS
 
 ani_fire::ani_fire()  : Animation("Fire") {
   
 }
-
+/*
 void ani_fire::setBrightness(byte brightness) {
     this->brightness = brightness;
 }
-
+*/
 void ani_fire::update_settings(byte hue, bool inverted, byte strengh) {
     this->current_color.hue = hue;
     this->inverted = inverted;
@@ -58,16 +58,16 @@ void ani_fire::setSpeed(byte speed) {
 // COOLING: How much does the air cool as it rises?
 // Less cooling = taller flames.  More cooling = shorter flames.
 // Default 50, suggested range 20-100
-#define COOLING  55
+#define COOLING  100
 
 // SPARKING: What chance (out of 255) is there that a new spark will be lit?
 // Higher chance = more roaring fire.  Lower chance = more flickery fire.
 // Default 120, suggested range 50-200.
-#define SPARKING 120
+#define SPARKING 200
 
 bool gReverseDirection = false;
 
-void ani_fire::run(CRGB *buffer)
+void ani_fire::drawBackground(CRGB *buffer)
 {
   // Array of temperature readings at each simulation cell
   static byte heat[NUM_LEDS];
@@ -99,8 +99,4 @@ void ani_fire::run(CRGB *buffer)
     }
     buffer[pixelnumber] = color;
   }
-}
-
-void ani_fire::updateColor(CHSV color) {
-    this->current_color = color;
 }

@@ -27,7 +27,7 @@ typedef struct {
 } wifiCredentials_t;
 
 typedef struct {
-    uint8_t brightness;
+    uint8_t brightness = 1;
     bool background;
     bool temp;
     bool time;
@@ -35,6 +35,10 @@ typedef struct {
     uint8_t sat;
     uint8_t hue;
     byte animation;
+    byte speed = 20;
+    char broker_host[64] = "broker.hivemq.com";
+    char broker_user[64] = "";
+    char broker_pass[64] = "";
 } config_t;
 
 class Config

@@ -12,9 +12,9 @@ extern byte points_grass[22];
 class ani_christmas : public Animation {
     public:
         ani_christmas(byte brightness, const CRGB& flake_colors, CRGB bg_color);
-        void run(CRGB* buffer);
+        void drawBackground(CRGB* buffer);
         void setSpeed(byte speed);
-        void setBrightness(byte brightness);
+        //void setBrightness(byte brightness);
 
     private:
         void spawn_flakes();
