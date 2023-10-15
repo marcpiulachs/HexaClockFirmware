@@ -7,6 +7,7 @@
 #include <string>
 #include <Arduino.h>
 #include <FastLED.h>
+#include <TimeLib.h>
 #include "graphics.h"
 
 using namespace std;
@@ -27,7 +28,14 @@ class Animation
         byte brightness = 255;
         CRGB background = CRGB::Black;
         CRGB foreground = CRGB::White;
- 
+
+        CRGB foreground_buffer  [NUM_LEDS];
+        CRGB background_buffer  [NUM_LEDS];
+
+        bool draw_time = true;
+        bool draw_background = true;
+        bool draw_inverted = true;
+
         byte pixel_map[NUM_ROWS][NUM_COLS] = 
         {
             {0 ,0 ,0 ,1 ,2 ,0 ,0 ,0 },
@@ -54,25 +62,50 @@ class Animation
     public:
         Animation(const char *type)
         {
-             strncpy(this->type , type, sizeof(this->type)); 
+             strncpy(this->type , type, sizeof(this->type));
+
+             // Initialize foreground and background to off/black pixels
+             fill_solid(foreground_buffer, NUM_LEDS, CRGB::Black);
+             fill_solid(background_buffer, NUM_LEDS, CRGB::Black);
         }
 
         virtual void run(CRGB* buffer)
         {
-            drawBackground(buffer);
-            drawClock(buffer);
+            EVERY_N_MILLISECONDS(1) 
+            {
+                drawBackground(background_buffer);
+                drawClock(foreground_buffer);
+                drawFrame(buffer);
+            }
         }
 
-        virtual void drawClock(CRGB* buffer)
+        void drawFrame(CRGB* buffer);
+
+        virtual void drawClock(CRGB* buffer);
+
+        virtual void drawBackground(CRGB* buffer)
         {
 
         }
 
-        virtual void drawBackground(CRGB* buffer);
+        virtual void setInvert(bool value)
+        {
+            this->draw_inverted = value;
+        }
+        
+        virtual void setTime(bool value)
+        {
+            this->draw_time = value;
+        }
+
+        virtual void setBackground(bool value)
+        {
+           this->draw_background = value;
+        }
 
         virtual void setSpeed(byte speed)
         {
-           speed = speed;
+           this->speed = speed;
         }
 
         virtual void setBrightness(byte brightness)

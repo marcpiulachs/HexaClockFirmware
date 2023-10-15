@@ -7,6 +7,7 @@ class ani_bluetooth_setup : public Animation {
     public:
         ani_bluetooth_setup();
         void drawBackground(CRGB* buffer);
+        virtual void drawClock(CRGB* buffer);
     private:
         int16_t counter = 0;
         CRGB color = CRGB::Yellow;

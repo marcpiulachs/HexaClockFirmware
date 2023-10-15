@@ -5,6 +5,11 @@ ani_startup_sequence::ani_startup_sequence() : Animation ("Startup")
 
 }
 
+void ani_startup_sequence::drawClock(CRGB *buffer)
+{
+
+}
+
 void ani_startup_sequence::drawBackground(CRGB *buffer) 
 {
     switch (this->counter % 4)

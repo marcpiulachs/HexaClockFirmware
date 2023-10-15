@@ -7,9 +7,8 @@ class ani_startup_sequence : public Animation {
     public:
         ani_startup_sequence();
         void drawBackground(CRGB* buffer);
-        //void setState(ani_startup_state state);
+        virtual void drawClock(CRGB* buffer);
     private:
-        //ani_startup_state state = ani_startup_state::START;
         int16_t counter = 0;
 };
 

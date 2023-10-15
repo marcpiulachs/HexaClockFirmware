@@ -37,14 +37,7 @@ WiFiUDP ntpUDP;
 
 NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
-#define NUM_LEDS 96
-#define DATA_PIN 27
-
 Sensors sensors(1);
-
-CRGB time_buffer        [NUM_LEDS];
-CRGB animation_buffer   [NUM_LEDS];
-CRGB output_buffer      [NUM_LEDS];
 
 /* WiFi credentials */
 const char* ssid;
@@ -72,48 +65,6 @@ bool forceTimeSync()  {
         return success;
 }
 
-void display_time(int hour, int minutes, const CRGB& color_minutes_a, const CRGB& color_minutes_b, const CRGB& color_hours_a, const CRGB& color_hours_b) {
-    uint16_t digitHour0 = font[hour/10];
-    uint16_t digitHour1 = font[hour%10];
-    uint16_t digitMinutes0 = font[minutes/10];
-    uint16_t digitMinutes1 = font[minutes%10];
-
-    for(uint8_t i=0; i<10; i++) 
-    {
-        if((digitHour0 >> (15-i)) & 0x01)
-            time_buffer[ font_position[0][i] ] = color_hours_a;
-        else
-            time_buffer[ font_position[0][i] ] = CRGB::Black;
-
-        if((digitHour1 >> (15-i)) & 0x01)
-            time_buffer[ font_position[1][i] ] = color_hours_b;
-        else
-            time_buffer[ font_position[1][i] ] = CRGB::Black;
-
-
-        if((digitMinutes0 >> (15-i)) & 0x01)
-            time_buffer[ font_position[2][i] ] = color_minutes_a;
-        else
-            time_buffer[ font_position[2][i] ] = CRGB::Black;
-
-        if((digitMinutes1 >> (15-i)) & 0x01)
-            time_buffer[ font_position[3][i] ] = color_minutes_b;
-        else
-            time_buffer[ font_position[3][i] ] = CRGB::Black;
-    }
-}
-
-void display2(bool draw_time) 
-{
-    for(int i=0; i<NUM_LEDS; i++) {
-        if( (time_buffer[i].r == 0 && time_buffer[i].g == 0 && time_buffer[i].b == 0) || !draw_time) {
-            output_buffer[i] = animation_buffer[i];
-        } else {
-            output_buffer[i] = time_buffer[i];
-        }
-    }
-}
-
 void setup() {
     
     pinMode(32, OUTPUT);    // sets the digital pin 32 as output
@@ -121,6 +72,8 @@ void setup() {
 
     digitalWrite(32, HIGH);
     digitalWrite(33, HIGH);
+
+    delay(100);
 
     pinMode(26, OUTPUT);    // sets the digital pin 26 as output
     pinMode(12, OUTPUT);    // sets the digital pin 12 as output
@@ -135,26 +88,27 @@ void setup() {
     // firmware instead.
     digitalWrite(12, HIGH);
 
-    // Make sure data pin is low so we don't latch up the LEDs.
-    digitalWrite(DATA_PIN, LOW);
-
-    FastLED.addLeds<WS2812B, DATA_PIN, GRB>(output_buffer, NUM_LEDS);
-    FastLED.setBrightness(20);
-    FastLED.clear(true);
-    
+    // Setup serial port
     Serial.begin(9600);
-    sensors.begin();
+    Serial.println("HexaClock started");
+    Serial.println();
+    
+    // Setup LED display
+    display.setup();
+    display.setAnnimation(annimations::STARTUP_START);
+    display.setBrightness(config.config.brightness);
+
+    //sensors.begin();
 
     config.begin(true);
-    usbPower.begin();
+    //usbPower.begin();
 
     mqtt_begin();
-    
-    display.setAnnimation(annimations::STARTUP_START);
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    WiFi.begin("HDO_IoT", "Twister123");
+    //WiFi.begin("HDO_IoT", "Twister123");
+    WiFi.begin("MiFibra-2D81", "jJAML2Mc");
     Serial.println("Conecting to WIFI:");
 
     /*
@@ -206,7 +160,7 @@ void loop()
         wifi_connected = false;
 
         // Wifi connecting
-        Serial.print('.');
+        //Serial.print('.');
     }
     else
     {
@@ -258,7 +212,12 @@ void loop()
     {
         if (complete)
         {
-            display.setAnnimation(annimations::WOPR);
+            display.setAnnimation((annimations)config.config.animation);
+            display.setSpeed(config.config.speed);
+            display.setTime(config.config.time);
+            display.setBrightness(config.config.brightness);
+            display.setBackground(config.config.background);
+            display.setInvert(config.config.invert);
         }
         else
         {
@@ -273,39 +232,6 @@ void loop()
     {
         display.setAnnimation(annimations::SETUP_BLUETOOTH);
     }
-
-    EVERY_N_MILLISECONDS((config.config.speed * 10)) 
-    {
-       // Serial.println("RenderFrame");
-        //Serial.println(config.config.speed * 10);
-        //Serial.println();
-
-        uint8_t hue = config.getColorHue();
-        uint8_t sat = config.getColorSat();
-        uint8_t brightness = config.getBrightness();
-
-        CHSV color = CHSV(hue, sat, brightness);
-
-        if (config.getBackgroundOn())
-        {
-            display.run(animation_buffer);
-        }
-        else
-        {
-            // Turn off clock backgound
-            fill_solid(animation_buffer, NUM_LEDS, CRGB::Black);
-        }
-
-        if (config.getTimeOn() && complete)
-        {
-            time_t time = now();
-            CRGB color = CRGB(150, 120, 170);
-            display_time(hour(time) % 24, minute(time), color, color, color, color);
-        }
-
-        display2(true);
-        
-        FastLED.show();
-        FastLED.setBrightness(config.config.brightness);
-    } 
+    
+    display.draw();
 }

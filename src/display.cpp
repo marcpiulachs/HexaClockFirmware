@@ -3,6 +3,46 @@
 Display::Display() {
 }
 
+void Display::setup()
+{
+    // Make sure data pin is low so we don't latch up the LEDs.
+    digitalWrite(DATA_PIN, LOW);
+
+    // Setup fastled settings
+    FastLED.addLeds<WS2812B, DATA_PIN, GRB>(output_buffer, NUM_LEDS);
+    FastLED.setBrightness(0);
+    FastLED.clear(true);
+}
+
+void Display::setTime(bool value) 
+{
+    if (this->animation != NULL)
+        this->animation->setTime(value);
+}
+
+void Display::setSpeed(byte speed) 
+{
+    if (this->animation != NULL)
+        this->animation->setSpeed(speed);
+}
+
+void Display::setBrightness(byte brightness)
+{
+    this->brightness = brightness;
+}
+
+void Display::setBackground(bool value) 
+{
+    if (this->animation != NULL)
+        this->animation->setBackground(value);
+}
+
+void Display::setInvert(bool value) 
+{
+    if (this->animation != NULL)
+        this->animation->setInvert(value);
+}
+
 void Display::setAnnimation(annimations annimation) 
 {
     if (annimation != current_animation)
@@ -11,9 +51,11 @@ void Display::setAnnimation(annimations annimation)
         switch (this->current_animation) {
             case STARTUP_START:
                 animation = new ani_startup_sequence();
+                this->animation->setSpeed(255);
                 break;
             case STARTUP_WIFI:
                 this->animation = new ani_wifi_connecting();
+                this->animation->setSpeed(255);
                 break;
             case COLORFADE:
                 this->animation = new ani_color_fade(120);
@@ -45,7 +87,7 @@ void Display::setAnnimation(annimations annimation)
                 break;
             case PLASMA:
                 this->animation = new ani_plasma();
-                this->animation->setSpeed(10);
+                this->animation->setSpeed(1);
                 break;
             case SINE:
                 this->animation = new ani_sine();
@@ -69,13 +111,18 @@ void Display::setAnnimation(annimations annimation)
                 break;
         }
 
+        Serial.println();
         Serial.print("Animation set to : ");
         Serial.print(this->animation->getType().c_str());
         Serial.println();
     }
 }
 
-void Display::run(CRGB* buffer) {
+void Display::draw()
+{
     if (this->animation != NULL)
-        this->animation->drawBackground(buffer);
+        this->animation->run(output_buffer);
+
+    FastLED.show();
+    FastLED.setBrightness(this->brightness);
 }

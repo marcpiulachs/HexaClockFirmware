@@ -32,13 +32,14 @@ void Config::ReadCredentials(void)
 
 void Config::reset()
 {
+    /*
     setBrightness(150);
     setBackgroundOn(true);
     setTimeOn(true);
     setTempOn(false);
     setAnimation(annimations::BREATHING);
     setColorHue(50);
-    setColorSat(255);
+    setColorSat(255);*/
 }
 
 uint8_t Config::getBrightness()
@@ -48,6 +49,7 @@ uint8_t Config::getBrightness()
 
 void Config::setBrightness(uint8_t value)
 {
+    config.brightness = value;
     EEPROM.write(EEPROM_ADDR_BRIGHTNESS, value);
     EEPROM.commit();
 }
@@ -59,8 +61,10 @@ bool Config::getBackgroundOn()
 
 void Config::setBackgroundOn(bool value)
 {
+    config.background = value;
+    /*
     EEPROM.write(EEPROM_ADDR_BACKGROUND_ON, value);
-    EEPROM.commit();
+    EEPROM.commit();*/
 }
 
 bool Config::getTimeOn()
@@ -70,8 +74,14 @@ bool Config::getTimeOn()
 
 void Config::setTimeOn(bool value)
 {
-    EEPROM.write(EEPROM_ADDR_TIME_ON, value);
-    EEPROM.commit();
+    config.time = value;
+    //EEPROM.write(EEPROM_ADDR_TIME_ON, value);
+    //EEPROM.commit();
+}
+
+void Config::setInvertOn(bool value)
+{
+    config.invert = value;
 }
 
 void Config::setTempOn(bool value)
@@ -104,6 +114,7 @@ annimations Config::getAnimation()
 
 void Config::setAnimation(annimations value)
 {
+    config.animation = (int)value;
     EEPROM.write(EEPROM_ADDR_ANNIMATION, (int)value);
     EEPROM.commit();
 }
@@ -128,4 +139,11 @@ void Config::setColorSat(uint8_t value)
 {
     EEPROM.write(EEPROM_ADDR_SAT, value);
     EEPROM.commit();
+}
+
+void Config::setSpeed(uint8_t value)
+{
+    config.speed = value;
+    //EEPROM.write(EEPROM_ADDR_SAT, value);
+   // EEPROM.commit();
 }

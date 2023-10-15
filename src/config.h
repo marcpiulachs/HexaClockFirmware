@@ -27,18 +27,20 @@ typedef struct {
 } wifiCredentials_t;
 
 typedef struct {
-    uint8_t brightness = 1;
-    bool background;
+    uint8_t brightness = 5;
+    bool background = true;
     bool temp;
-    bool time;
+    bool time = true;
+    bool invert = false;
     bool alarm;
     uint8_t sat;
     uint8_t hue;
-    byte animation;
-    byte speed = 20;
+    byte animation = 8;
+    byte speed = 1;
     char broker_host[64] = "broker.hivemq.com";
     char broker_user[64] = "";
     char broker_pass[64] = "";
+    int broker_port = 1883;
 } config_t;
 
 class Config
@@ -62,6 +64,8 @@ public:
     bool getTempOn();
     void setTempOn(bool value);
 
+    void setInvertOn(bool value);
+
     bool setAlarmOn();
     void getAlarmOn(bool value);
 
@@ -72,6 +76,8 @@ public:
     void setColorHue(uint8_t value);
     uint8_t getColorSat();
     void setColorSat(uint8_t value);
+
+    void setSpeed(uint8_t value);
 
     void SaveCredentials();
     void ReadCredentials();

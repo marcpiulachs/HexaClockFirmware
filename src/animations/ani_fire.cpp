@@ -65,7 +65,7 @@ void ani_fire::setSpeed(byte speed) {
 // Default 120, suggested range 50-200.
 #define SPARKING 200
 
-bool gReverseDirection = false;
+bool gReverseDirection = true;
 
 void ani_fire::drawBackground(CRGB *buffer)
 {

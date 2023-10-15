@@ -5,6 +5,11 @@ ani_bluetooth_setup::ani_bluetooth_setup() : Animation ("Bluetooth")
 
 }
 
+void ani_bluetooth_setup::drawClock(CRGB *buffer)
+{
+    Serial.println("No clock");
+}
+
 void ani_bluetooth_setup::drawBackground(CRGB *buffer) 
 {
     // Turn off clock backgound

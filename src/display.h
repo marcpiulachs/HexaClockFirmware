@@ -17,6 +17,9 @@
 #include "animations/ani_wopr.h"
 #include "animations/ani_bluetooth_setup.h"
 
+#define NUM_LEDS 96
+#define DATA_PIN 27
+
 enum annimations {
     STARTUP_START = 0,
     STARTUP_WIFI = 1,
@@ -38,14 +41,20 @@ enum annimations {
 class Display {
     public:
         Display();
+        void setup();
+        void draw();
         void setAnnimation(annimations annimation);
-        void run(CRGB* buffer);
-        //void updateColor(const CHSV& color);
+        void setSpeed(byte speed);
+        void setBrightness(byte brightness);
+        void setTime(bool value);
+        void setBackground(bool value);
+        void setInvert(bool value);
     private:
         annimations current_animation;
+        CRGB output_buffer [NUM_LEDS];
+        byte brightness = 1;
     protected:
         Animation* animation = new ani_startup_sequence();
 };
-
 
 #endif //_DISPLAY_H
