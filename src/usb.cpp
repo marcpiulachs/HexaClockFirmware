@@ -52,22 +52,22 @@ void UsbPower::loop()
         {
             switch (current_advertisement)
             {
-            case UsbCurrentAvailable::k3A:
-                digitalWrite(kOnboardLed0Pin, HIGH);
-                digitalWrite(kOnboardLed1Pin, HIGH);
-                brightness = (255 * (3.0f - kMaxIdleCurrent) / kMatrixMaxCurrent);
-                EnableLEDPower();
-                break;
-            case UsbCurrentAvailable::k1_5A:
-                digitalWrite(kOnboardLed0Pin, LOW);
-                digitalWrite(kOnboardLed1Pin, HIGH);
-                brightness = (255 * (1.5f - kMaxIdleCurrent) / kMatrixMaxCurrent);
-                EnableLEDPower();
-                break;
-            default:
-                digitalWrite(kOnboardLed0Pin, LOW);
-                digitalWrite(kOnboardLed1Pin, LOW);
-                DisableLEDPower();
+                case UsbCurrentAvailable::k3A:
+                    digitalWrite(kOnboardLed0Pin, HIGH);
+                    digitalWrite(kOnboardLed1Pin, HIGH);
+                    brightness = (255 * (3.0f - kMaxIdleCurrent) / kMatrixMaxCurrent);
+                    EnableLEDPower();
+                    break;
+                case UsbCurrentAvailable::k1_5A:
+                    digitalWrite(kOnboardLed0Pin, LOW);
+                    digitalWrite(kOnboardLed1Pin, HIGH);
+                    brightness = (255 * (1.5f - kMaxIdleCurrent) / kMatrixMaxCurrent);
+                    EnableLEDPower();
+                    break;
+                default:
+                    digitalWrite(kOnboardLed0Pin, LOW);
+                    digitalWrite(kOnboardLed1Pin, LOW);
+                    DisableLEDPower();
             }
             current_available = current_advertisement;
         }
