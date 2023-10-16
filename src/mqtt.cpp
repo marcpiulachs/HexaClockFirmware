@@ -63,10 +63,11 @@ void mqtt_reconnect()
     if (!mqtt_client.connected())
     {
         Serial.println("Attempting MQTT connection...");
-        Serial.println("Host:");
+        Serial.println();
+        Serial.print("Host:");
         Serial.print(config.config.broker_host);
         Serial.println();
-        Serial.println("Client Id:");
+        Serial.print("Client Id:");
         Serial.print(clientid);
         Serial.println();
 
