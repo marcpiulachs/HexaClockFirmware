@@ -10,7 +10,6 @@ class ani_wifi_setup : public Animation {
         virtual void drawClock(CRGB* buffer);
     private:
         int16_t counter = 0;
-        CRGB color = CRGB::Yellow;
 };
 
 

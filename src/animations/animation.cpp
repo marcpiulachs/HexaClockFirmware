@@ -1,7 +1,3 @@
-//
-// Created by samuel on 10/09/2020.
-//
-
 #include "animation.h"
 
 void Animation::drawClock(CRGB* buffer) 
@@ -17,7 +13,7 @@ void Animation::drawClock(CRGB* buffer)
     uint16_t digitMinutes0 = font[minutes/10];
     uint16_t digitMinutes1 = font[minutes%10];
 
-    for(uint8_t i=0; i<10; i++) 
+    for (uint8_t i = 0; i < 10; i++)
     {
         if((digitHour0 >> (15-i)) & 0x01)
             buffer[ font_position[0][i] ] = color;
@@ -57,31 +53,26 @@ void Animation::drawFrame(CRGB* buffer)
     }
 }
 
-byte Animation::get_pixel_id_from_xy(uint8_t x, uint8_t y) {
+byte Animation::XY(uint8_t x, uint8_t y) 
+{
+    // As a safety measure check if x,y is a valid pixel,
+    // any out of bounds address maps to the first hidden pixel
+    if ( (x >= NUM_COLS) || (y >= NUM_ROWS) ) {
+        return DUMMY_LED;
+    }
+
     return pixel_map[y][x]-1;
 }
 
-void Animation::fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color) {
+void Animation::fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color, bool override) {
     for (int y = 0; y < NUM_ROWS ; y++) {
         for (int x = 7; x >= 0; x--) {
             bool b = ((sprite[y] >> x) & 0x01);
-            byte pix = get_pixel_id_from_xy(7 - x, y);
+            byte pix = XY(7 - x, y);
             if(pix != 255 && b)
                 buffer[pix] = color;
-            else if (!b)
-                buffer[pix] = CRGB(0,0,0);
+            else if (!b && override)
+                buffer[pix] = CRGB::Black;
         }
     }
 }
-
-void Animation::fill_buffer_with_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color) {
-    for (int y = 0; y < 15; y++) {
-        for (int x = 7; x >= 0; x--) {
-            bool b = ((sprite[y] >> x) & 0x01);
-            byte pix = get_pixel_id_from_xy(7 - x, y);
-            if(pix != 255 && b)
-                buffer[pix] = color;
-        }
-    }
-}
-

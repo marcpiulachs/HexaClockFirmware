@@ -21,7 +21,7 @@
 #define DATA_PIN 27
 
 enum annimations {
-    STARTUP_START = 0,
+    STARTUP = 0,
     STARTUP_WIFI = 1,
     SETUP_WIFI = 14,
     SETUP_BLUETOOTH = 16,

@@ -15,7 +15,7 @@ void ani_plasma::drawBackground(CRGB *buffer) {
         for (int16_t y = 0; y < NUM_ROWS; y++) {
             int16_t r = sin16(_plasmaTime) / 256;
             int16_t h = sin16(x * r * _plasmaXfactor + _plasmaTime) + cos16(y * (-r) * _plasmaYfactor + _plasmaTime) + sin16(y * x * (cos16(-_plasmaTime) / 256) / 2);
-            buffer[get_pixel_id_from_xy(x, y)] = CHSV((uint8_t)((h / 256) + 128), 255, 255);
+            buffer[XY(x, y)] = CHSV((uint8_t)((h / 256) + 128), 255, 255);
         }
     }
     uint16_t oldPlasmaTime = _plasmaTime;

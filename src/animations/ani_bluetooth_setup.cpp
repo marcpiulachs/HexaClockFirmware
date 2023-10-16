@@ -2,33 +2,20 @@
 
 ani_bluetooth_setup::ani_bluetooth_setup() : Animation ("Bluetooth") 
 {
-
+    this->background = CRGB::Blue;
+    this->foreground = CRGB::White;
 }
 
 void ani_bluetooth_setup::drawClock(CRGB *buffer)
 {
-    Serial.println("No clock");
+    // No clock
 }
 
-void ani_bluetooth_setup::drawBackground(CRGB *buffer) 
+void ani_bluetooth_setup::drawBackground(CRGB *buffer)
 {
     // Turn off clock backgound
-    fill_solid(buffer, NUM_LEDS, CRGB::Blue);
+    fill_solid(buffer, NUM_LEDS, this->background);
 
-    switch (this->counter % 4)
-    {
-        case 0:
-            fill_buffer_with_sprite_without_override(buffer, sprite_bluetooth_logo, CRGB::White);
-            break;
-        case 1:
-            fill_buffer_with_sprite_without_override(buffer, sprite_bluetooth_logo, CRGB::White);
-            break;
-        case 2:
-            fill_buffer_with_sprite_without_override(buffer, sprite_bluetooth_logo, CRGB::White);
-            break;
-        case 3:
-            fill_buffer_with_sprite_without_override(buffer, sprite_bluetooth_logo, CRGB::White);
-            break;
-    }
-    this->counter++;
+    // Draw Bluetooth logo
+    fill_sprite(buffer, sprite_bluetooth_logo, this->foreground, false);
 }

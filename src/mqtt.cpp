@@ -250,8 +250,8 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
     {
         float speed = atoi((char *)payload);
         int speed_int = map((uint8_t)speed, 0, 100, 0, 255);
+        config.setSpeed(speed_int);
         mqtt_client.publish(mqtt_topics_speed, String(speed_int).c_str());
-        config.setSpeed(speed_int);  
     }
   
     if (String(topic).endsWith(mqtt_topics_effect))
@@ -329,7 +329,7 @@ void mqtt_reportConfig()
 
     switch (config.getAnimation())
     {
-        case STARTUP_START:
+        case STARTUP:
         case STARTUP_WIFI:
             break;
         case COLORFADE:

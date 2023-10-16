@@ -53,16 +53,16 @@ void ani_breathing::drawBackground(CRGB *buffer) {
         switch (i)
         {
             case 3:
-                fill_buffer_with_sprite_without_override(buffer, sprite_ring3, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
+                fill_sprite(buffer, sprite_ring3, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)), true);
                 break;
             case 2:
-                fill_buffer_with_sprite_without_override(buffer, sprite_ring2, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
+                fill_sprite(buffer, sprite_ring2, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)), true);
                 break;
             case 1:
-                fill_buffer_with_sprite_without_override(buffer, sprite_ring1, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
+                fill_sprite(buffer, sprite_ring1, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)), true);
                 break;
             case 0:
-                fill_buffer_with_sprite_without_override(buffer, sprite_ring0, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)));
+                fill_sprite(buffer, sprite_ring0, CHSV(this->current_color.hue, this->current_color.saturation, qsub8(lumi, 255 - this->brightness)), true);
                 break;
         }
     }

@@ -1,6 +1,6 @@
 #include "stdint.h"
 
-#include <FastLED.h>
+//#include <FastLED.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <NTPClient.h>
@@ -54,15 +54,16 @@ time_t getNTPTime() {
     return ntpClient.getEpochTime();
 }
 
-bool forceTimeSync()  {
-        Serial.print("Forcing time sync! ");
-        ntpClient.forceUpdate();
-        setSyncInterval(0);
-        time_t time = now();
-        setSyncInterval(300);
-        const bool success = year(time) > 2019;
-        Serial.println(success ? "Successful" : "Failed");
-        return success;
+bool forceTimeSync()  
+{
+    Serial.print("Forcing time sync! ");
+    ntpClient.forceUpdate();
+    setSyncInterval(0);
+    time_t time = now();
+    setSyncInterval(300);
+    const bool success = year(time) > 2019;
+    Serial.println(success ? "Successful" : "Failed");
+    return success;
 }
 
 void setup() {
@@ -95,7 +96,7 @@ void setup() {
     
     // Setup LED display
     display.setup();
-    display.setAnnimation(annimations::STARTUP_START);
+    display.setAnnimation(annimations::STARTUP);
     display.setBrightness(config.config.brightness);
 
     //sensors.begin();
@@ -107,8 +108,10 @@ void setup() {
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
+    delay(50); //Wait for serial
     //WiFi.begin("HDO_IoT", "Twister123");
-    WiFi.begin("MiFibra-2D81", "jJAML2Mc");
+    //WiFi.begin("MiFibra-2D81", "jJAML2Mc");
+    WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
     Serial.println("Conecting to WIFI:");
 
     /*
@@ -160,7 +163,7 @@ void loop()
         wifi_connected = false;
 
         // Wifi connecting
-        //Serial.print('.');
+        Serial.print('.');
     }
     else
     {
@@ -193,7 +196,7 @@ void loop()
         {
             if (!mqtt_connected)
             {
-                Serial.print("MQTT Connected");
+                Serial.print("MQTT Connected!");
                 mqtt_connected = true;
             }
 
@@ -221,7 +224,7 @@ void loop()
         }
         else
         {
-            display.setAnnimation(annimations::STARTUP_START);
+            display.setAnnimation(annimations::STARTUP);
         }
     }
     else if (state == ani_startup_state::WIFI_SETUP)

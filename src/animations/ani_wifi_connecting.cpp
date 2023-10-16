@@ -12,16 +12,16 @@ void ani_wifi_connecting::drawBackground(CRGB *buffer) {
         switch (this->counter % 4)
         {
             case 0:
-                fill_buffer_with_sprite(buffer, sprite_wifi0, CRGB::Blue);
+                fill_sprite(buffer, sprite_wifi0, CRGB::Blue, true);
                 break;
             case 1:
-                fill_buffer_with_sprite(buffer, sprite_wifi1, CRGB::Blue);
+                fill_sprite(buffer, sprite_wifi1, CRGB::Blue, true);
                 break;
             case 2:
-                fill_buffer_with_sprite(buffer, sprite_wifi2, CRGB::Blue);
+                fill_sprite(buffer, sprite_wifi2, CRGB::Blue, true);
                 break;
             case 3:
-                fill_buffer_with_sprite(buffer, sprite_wifi3, CRGB::Blue);
+                fill_sprite(buffer, sprite_wifi3, CRGB::Blue, true);
                 break;
         }
         this->counter++;

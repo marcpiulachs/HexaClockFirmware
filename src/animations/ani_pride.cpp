@@ -1,26 +1,7 @@
 #include "ani_pride.h"
 
-//#define NUM_ROWS 15
-//#define NUM_COLS 8
-//#define BRIGHTNESS 255
-//#define NUM_LEDS NUM_ROWS * NUM_COLS
-
 ani_pride::ani_pride()  : Animation("Pride") {
   
-}
-/*
-void ani_pride::setBrightness(byte brightness) {
-    this->brightness = brightness;
-}*/
-
-void ani_pride::update_settings(byte hue, bool inverted, byte strengh) {
-    this->current_color.hue = hue;
-    this->inverted = inverted;
-    this->strengh = strengh;
-}
-
-void ani_pride::setSpeed(byte speed) {
-    this->step_speed = speed;
 }
 
 void ani_pride::drawBackground(CRGB *buffer)

@@ -48,8 +48,9 @@ void Display::setAnnimation(annimations annimation)
     if (annimation != current_animation)
     {
         this->current_animation = annimation;
-        switch (this->current_animation) {
-            case STARTUP_START:
+        switch (this->current_animation) 
+        {
+            case STARTUP:
                 animation = new ani_startup_sequence();
                 this->animation->setSpeed(255);
                 break;
@@ -107,7 +108,7 @@ void Display::setAnnimation(annimations annimation)
                 break;
             case WOPR:
                 this->animation = new ani_wopr();
-                this->animation->setSpeed(10);
+                this->animation->setSpeed(100);
                 break;
         }
 
@@ -121,8 +122,11 @@ void Display::setAnnimation(annimations annimation)
 void Display::draw()
 {
     if (this->animation != NULL)
+    {
+        // Render the animation
         this->animation->run(output_buffer);
 
-    FastLED.show();
-    FastLED.setBrightness(this->brightness);
+        FastLED.delay(animation->getSpeed());
+        FastLED.setBrightness(this->brightness);
+    }
 }

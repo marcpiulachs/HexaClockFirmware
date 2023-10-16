@@ -1,7 +1,7 @@
 #ifndef _ANIMATION_H
 #define _ANIMATION_H
 
-//#define FASTLED_ALL_PINS_HARDWARE_SPI
+#define FASTLED_INTERNAL
 
 #include <iostream>
 #include <string>
@@ -15,8 +15,7 @@ using namespace std;
 #define NUM_ROWS 15
 #define NUM_COLS 8
 #define NUM_LEDS 96
-
-//extern byte pixel_map[NUM_ROWS][NUM_COLS];
+#define DUMMY_LED 0 // Non visible led
 
 class Animation
 {
@@ -55,9 +54,9 @@ class Animation
             {0 ,0 ,0 ,95,96,0 ,0 ,0 },  
          };
 
-        byte get_pixel_id_from_xy(uint8_t x, uint8_t y);
-        void fill_buffer_with_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color);
-        void fill_buffer_with_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color);
+        byte XY(uint8_t x, uint8_t y);
+        void fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color, bool override);
+        //void fill_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color);
 
     public:
         Animation(const char *type)
@@ -71,12 +70,9 @@ class Animation
 
         virtual void run(CRGB* buffer)
         {
-            EVERY_N_MILLISECONDS(1) 
-            {
-                drawBackground(background_buffer);
-                drawClock(foreground_buffer);
-                drawFrame(buffer);
-            }
+            drawBackground(background_buffer);
+            drawClock(foreground_buffer);
+            drawFrame(buffer);
         }
 
         void drawFrame(CRGB* buffer);
@@ -85,7 +81,7 @@ class Animation
 
         virtual void drawBackground(CRGB* buffer)
         {
-
+            fill_solid(background_buffer, NUM_LEDS, this->background);
         }
 
         virtual void setInvert(bool value)
@@ -106,6 +102,11 @@ class Animation
         virtual void setSpeed(byte speed)
         {
            this->speed = speed;
+        }
+
+        virtual int getSpeed()
+        {
+           return this->speed;
         }
 
         virtual void setBrightness(byte brightness)

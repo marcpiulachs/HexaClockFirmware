@@ -7,7 +7,8 @@
 ani_fish::ani_fish() : Animation ("Rainbow") {
 }
 
-void ani_fish::drawBackground(CRGB *buffer) {
+void ani_fish::drawBackground(CRGB *buffer) 
+{
   for (int i = 0; i < NUM_LEDS; i++) {
     buffer[i] = CHSV(hue + (i * 10), 255, 255);
   }
@@ -16,4 +17,3 @@ void ani_fish::drawBackground(CRGB *buffer) {
     hue++;
   }
 }
-

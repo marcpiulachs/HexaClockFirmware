@@ -7,7 +7,7 @@ ani_startup_sequence::ani_startup_sequence() : Animation ("Startup")
 
 void ani_startup_sequence::drawClock(CRGB *buffer)
 {
-
+    // No clock
 }
 
 void ani_startup_sequence::drawBackground(CRGB *buffer) 
@@ -15,16 +15,16 @@ void ani_startup_sequence::drawBackground(CRGB *buffer)
     switch (this->counter % 4)
     {
         case 0:
-            fill_buffer_with_sprite(buffer, sprite_ring0, CRGB::Yellow);
+            fill_sprite(buffer, sprite_ring0, CRGB::Yellow, true);
             break;
         case 1:
-            fill_buffer_with_sprite(buffer, sprite_ring1, CRGB::YellowGreen);
+            fill_sprite(buffer, sprite_ring1, CRGB::Green, true);
             break;
         case 2:
-            fill_buffer_with_sprite(buffer, sprite_ring2, CRGB::GreenYellow);
+            fill_sprite(buffer, sprite_ring2, CRGB::Orange, true);
             break;
         case 3:
-            fill_buffer_with_sprite(buffer, sprite_ring3, CRGB::Green);
+            fill_sprite(buffer, sprite_ring3, CRGB::Red, true);
             break;
     }
     this->counter++;
@@ -40,9 +40,3 @@ void ani_startup_sequence::drawBackground(CRGB *buffer)
         fill_buffer_with_sprite(buffer, sprite_wifi0, CRGB(25,25,255));
     }*/
 }
-
-/*
-void ani_startup_sequence::setState(ani_startup_state state) {
-    this->state = state;
-    this->counter = 0;
-}*/

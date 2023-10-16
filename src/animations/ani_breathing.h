@@ -1,5 +1,5 @@
-#ifndef HEXCLOCK_ANI_BREATHING_H
-#define HEXCLOCK_ANI_BREATHING_H
+#ifndef _ANI_BREATHING_H
+#define _ANI_BREATHING_H
 
 #include "animation.h"
 
@@ -26,4 +26,4 @@ class ani_breathing : public Animation
 };
 
 
-#endif //HEXCLOCK_ANI_BREATHING_H
+#endif //_ANI_BREATHING_H
