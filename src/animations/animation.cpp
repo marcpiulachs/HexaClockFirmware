@@ -76,3 +76,13 @@ void Animation::fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& colo
         }
     }
 }
+
+void Animation::setSpeed(byte speed)
+{
+    this->speed = speed;
+}
+
+int Animation::getSpeed()
+{
+    return this->speed;
+}

@@ -1,54 +1,4 @@
-#include "stdint.h"
-
-//#include <FastLED.h>
-#include <WiFi.h>
-#include <ESPmDNS.h>
-#include <NTPClient.h>
-#include <TimeLib.h>
-#include <WiFiUdp.h>
-#include <OneWire.h>
-
-#include "secret.h"
-#include "graphics.h"
-#include "sensors.h"
-#include "usb.h"
-#include "mqtt.h"
-#include "config.h"
-#include "display.h"
-#include "network.h"
-#include "config.h"
-
-enum ani_startup_state {
-    NORMAL,
-    WIFI_SETUP,
-    BLUETOOTH_SETUP
-} typedef ani_startup_state;
-
-ani_startup_state state = ani_startup_state::NORMAL;
-
-bool wifi_connected = false;
-bool time_set = false;
-bool mqtt_connected = false;
-
-Config config;
-Network network;
-UsbPower usbPower;
-WiFiUDP ntpUDP;
-
-NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
-
-Sensors sensors(1);
-
-/* WiFi credentials */
-const char* ssid;
-const char* password;
-
-/* MQTT connection */
-const char* mqtt_user;
-const char* mqtt_pass;
-const char* mqtt_host;
-
-Display display;
+#include "main.h"
 
 time_t getNTPTime() {
     return ntpClient.getEpochTime();
@@ -84,13 +34,13 @@ void setup() {
 
     delay(50 /* milliseconds */);
 
-    // Enable the second 1.5A switch to reduce switch resistance
+    // vgnnEnable the second 1.5A switch to reduce switch resistance
     // even if we only have 1.5A total, because we can limit it in
     // firmware instead.
     digitalWrite(12, HIGH);
 
     // Setup serial port
-    Serial.begin(9600);
+    Serial.begin(9600, SERIAL_8N1);
     Serial.println("HexaClock started");
     Serial.println();
     
@@ -109,19 +59,10 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(50); //Wait for serial
-    //WiFi.begin("HDO_IoT", "Twister123");
+    WiFi.begin("HDO_IoT", "Twister123");
     //WiFi.begin("MiFibra-2D81", "jJAML2Mc");
-    WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
+    ///WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
     Serial.println("Conecting to WIFI:");
-
-    /*
-    while(!forceTimeSync()) {
-        EVERY_N_MILLISECONDS( 30 ) {
-            display.run(output_buffer);
-            FastLED.show();
-        }
-    }
-    */
 }
 
 void loop()

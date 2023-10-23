@@ -29,6 +29,7 @@ typedef struct {
 typedef struct {
     uint8_t brightness = 5;
     bool background = true;
+    bool isOn = true;
     bool temp;
     bool time = true;
     bool invert = false;
@@ -66,8 +67,14 @@ public:
 
     void setInvertOn(bool value);
 
-    bool setAlarmOn();
-    void getAlarmOn(bool value);
+    bool getAlarmOn();
+    void setAlarmOn(bool value);
+
+    bool getIsOn();
+    void setIsOn(bool value);
+
+    byte getSpeed();
+    void setSpeed(byte value);
 
     annimations getAnimation();
     void setAnimation(annimations value);

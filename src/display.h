@@ -30,7 +30,7 @@ enum annimations {
     CHRISTMAS = 4,
     FIBONACCI = 5,
     FIRE = 6,
-    FISH= 7,
+    FISH = 7,
     PLASMA = 8,
     PRIDE = 9,
     RAIN = 10,

@@ -1,9 +1,5 @@
-//
-// Created by samuel on 14/09/2020.
-//
-
-#ifndef _MQTT_FUNCTIONS_H
-#define _MQTT_FUNCTIONS_H
+#ifndef _MQTT_H
+#define _MQTT_H
 
 #define DEBUG_HEXCLOCK
 #define MSG_BUFFER_SIZE	128
@@ -14,28 +10,37 @@
 #include "secret.h"
 #include "config.h"
 
-//extern const char* mqtt_topics;
-extern const char* mqtt_topics_send_temp1;
-extern const char* mqtt_topics_send_temp2;
-extern const char* mqtt_topics_on_off_back;
-extern const char* mqtt_topics_on_off_time;
-//extern const char* mqtt_topics_on_off_all;
-extern const char* mqtt_topics_brightness;
-//extern const char* mqtt_topics_huesat;
-//extern const char* mqtt_reports_huesat;
-extern const char* mqtt_topics_invert;
-extern const char* mqtt_topics_hue;
-extern const char* mqtt_topics_sat;
-extern const char* mqtt_topics_effect;
+#define def_mqtt_all_topic              "%s/#"
+#define def_mqtt_topics_on_off_power    "%s/power"
+#define def_mqtt_topics_on_off_back     "%s/background"
+#define def_mqtt_topics_on_off_time     "%s/clock"
+#define def_mqtt_topics_on_off_temp     "%s/temp"
+#define def_mqtt_topics_on_off_alarm    "%s/alarm"
+#define def_mqtt_topics_brightness      "%s/brightness"
+//#define def_mqtt_topics_invert = "/invert";
+//#define def_mqtt_topics_hue = "/hue";
+//#define def_mqtt_topics_sat = "/sat";
+#define def_mqtt_topics_effect          "%s/effect"
+#define def_mqtt_topics_speed           "%s/speed"
+#define def_mqtt_topics_temp            "%s/temp"
+//#define def_mqtt_topics_alarm_hour = "/alarm/hour";
+//#define def_mqtt_topics_alarm_minute = "/alarm/minute";
+#define def_mqtt_topics_time_hour       "%s/time/hour"
+#define def_mqtt_topics_time_minute     "%s/time/minute"
+//#define def_mqtt_topics_time_sync = "/time/sync";
 
-extern const char* mqtt_reports_hue;
-extern const char* mqtt_reports_sat;
 
-//extern const char* mqtt_reports_on_off_all;
-extern const char* mqtt_reports_on_off_back;
-extern const char* mqtt_reports_on_off_time;
-extern const char* mqtt_reports_brightness;
-extern const char* mqtt_reports_effect;
+#define def_mqtt_reports_on_off_power   "%s/reports/onoff/power"
+#define def_mqtt_reports_on_off_back    "%s/reports/onoff/background"
+#define def_mqtt_reports_on_off_time    "%s/reports/onoff/time"
+#define def_mqtt_reports_on_off_temp    "%s/reports/onoff/temp"
+#define def_mqtt_reports_on_off_alarm   "%s/reports/onoff/alarm"
+#define def_mqtt_reports_brightness     "%s/reports/brightness"
+#define def_mqtt_reports_temp           "%s/reports/temp"
+#define def_mqtt_reports_time           "%s/reports/time"
+//#define def_mqtt_reports_hue = "/reports/hue";
+//#define def_mqtt_reports_sat = "/reports/sat";
+#define def_mqtt_reports_effect         "%s/reports/effect"
 
 extern WiFiClient espClient;
 extern PubSubClient mqtt_client;
@@ -44,9 +49,22 @@ extern Config config;
 extern void mqtt_begin();
 extern void mqtt_loop();
 
+void create_mqtt_client_id();
+void create_mqtt_topics();
+
 extern void mqtt_reportTemperature(float value);
 extern void mqtt_callback(char* topic, byte* payload, unsigned int length);
 extern void mqtt_reconnect();
-extern void mqtt_reportConfig();
+extern void mqtt_report_config();
 
-#endif //_MQTT_FUNCTIONS_H
+void report_temp();
+void report_speed();
+void report_alarm_on();
+void report_temp_on();
+void report_on();
+void report_brightness();
+void report_time_on();
+void report_background_on();
+void report_animation();
+
+#endif //_MQTT_H

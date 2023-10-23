@@ -9,6 +9,7 @@ extern uint16_t font[10];
 
 extern byte sprite_question_mark[15];
 extern byte sprite_bluetooth_logo[15];
+extern byte sprite_hexaclock_logo[15];
 
 extern byte sprite_wifi0[15];
 extern byte sprite_wifi1[15];
@@ -24,5 +25,6 @@ extern byte sprite_wopr0[15];
 extern byte sprite_wopr1[15];
 extern byte sprite_wopr2[15];
 extern byte sprite_wopr3[15];
+
 
 #endif

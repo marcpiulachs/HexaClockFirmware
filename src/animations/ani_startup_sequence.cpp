@@ -10,6 +10,11 @@ void ani_startup_sequence::drawClock(CRGB *buffer)
     // No clock
 }
 
+void ani_startup_sequence::setSpeed(byte speed)
+{
+    this->speed = map(speed, 0, 255, 0, 1024);
+}
+
 void ani_startup_sequence::drawBackground(CRGB *buffer) 
 {
     switch (this->counter % 4)

@@ -23,7 +23,7 @@ class Animation
         char type[64];
 
     protected:
-        byte speed      = 100;
+        byte speed = 100;
         byte brightness = 255;
         CRGB background = CRGB::Black;
         CRGB foreground = CRGB::White;
@@ -56,8 +56,6 @@ class Animation
 
         byte XY(uint8_t x, uint8_t y);
         void fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color, bool override);
-        //void fill_sprite_without_override(CRGB *buffer, const byte sprite[15],const CRGB& color);
-
     public:
         Animation(const char *type)
         {
@@ -68,11 +66,11 @@ class Animation
              fill_solid(background_buffer, NUM_LEDS, CRGB::Black);
         }
 
-        virtual void run(CRGB* buffer)
+        virtual void run(CRGB* display_buffer)
         {
             drawBackground(background_buffer);
             drawClock(foreground_buffer);
-            drawFrame(buffer);
+            drawFrame(display_buffer);
         }
 
         void drawFrame(CRGB* buffer);
@@ -99,16 +97,9 @@ class Animation
            this->draw_background = value;
         }
 
-        virtual void setSpeed(byte speed)
-        {
-           this->speed = speed;
-        }
-
-        virtual int getSpeed()
-        {
-           return this->speed;
-        }
-
+        virtual void setSpeed(byte speed);
+        virtual int getSpeed();
+        
         virtual void setBrightness(byte brightness)
         {
             this->brightness = brightness;

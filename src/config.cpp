@@ -1,7 +1,3 @@
-//
-// Created by samuel on 14/09/2020.
-//
-
 #include "config.h"
 
 void Config::begin(bool force_reset)
@@ -67,6 +63,16 @@ void Config::setBackgroundOn(bool value)
     EEPROM.commit();*/
 }
 
+bool Config::getIsOn()
+{
+    return true;
+}
+
+void Config::setIsOn(bool value)
+{
+    config.isOn = value;
+}
+
 bool Config::getTimeOn()
 {
     return EEPROM.read(EEPROM_ADDR_TIME_ON) == 1;
@@ -90,15 +96,24 @@ void Config::setTempOn(bool value)
     EEPROM.commit();
 }
 
-void Config::getAlarmOn(bool value)
+byte Config::getSpeed()
 {
-    EEPROM.write(EEPROM_ADDR_ALARM_ON, value);
-    EEPROM.commit();
+    return config.speed;
 }
 
-bool Config::setAlarmOn()
+void Config::setSpeed(byte value)
 {
-    return EEPROM.read(EEPROM_ADDR_ALARM_ON) == 1;
+    config.speed = value;
+}
+
+bool Config::getAlarmOn()
+{
+    return config.alarm;
+}
+
+void Config::setAlarmOn(bool value)
+{
+    config.alarm = value;
 }
 
 bool Config::getTempOn()
