@@ -1,10 +1,11 @@
 #include "main.h"
 
-time_t getNTPTime() {
+time_t getNTPTime()
+{
     return ntpClient.getEpochTime();
 }
 
-bool forceTimeSync()  
+bool forceTimeSync()
 {
     Serial.print("Forcing time sync! ");
     ntpClient.forceUpdate();
@@ -16,19 +17,20 @@ bool forceTimeSync()
     return success;
 }
 
-void setup() {
-    
-    pinMode(32, OUTPUT);    // sets the digital pin 32 as output
-    pinMode(33, OUTPUT);    // sets the digital pin 33 as output
+void setup()
+{
+
+    pinMode(32, OUTPUT); // sets the digital pin 32 as output
+    pinMode(33, OUTPUT); // sets the digital pin 33 as output
 
     digitalWrite(32, HIGH);
     digitalWrite(33, HIGH);
 
     delay(100);
 
-    pinMode(26, OUTPUT);    // sets the digital pin 26 as output
-    pinMode(12, OUTPUT);    // sets the digital pin 12 as output
-  
+    pinMode(26, OUTPUT); // sets the digital pin 26 as output
+    pinMode(12, OUTPUT); // sets the digital pin 12 as output
+
     // Enable 1.5A current to charge up the capacitances.
     digitalWrite(26, HIGH);
 
@@ -40,13 +42,13 @@ void setup() {
     digitalWrite(12, HIGH);
 
     // Sensors
-    pinMode(GPIO_NUM_21, INPUT); 
+    pinMode(GPIO_NUM_21, INPUT);
 
     // Setup serial port
     Serial.begin(9600, SERIAL_8N1);
     Serial.println("HexaClock started");
     Serial.println();
-    
+
     // Setup LED display
     display.setup();
     display.setAnnimation(annimations::STARTUP);
@@ -55,48 +57,48 @@ void setup() {
     sensors.begin();
 
     config.begin(true);
-    //usbPower.begin();
+    // usbPower.begin();
 
     mqtt_begin();
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    delay(50); //Wait for serial
-    //WiFi.begin("HDO_IoT", "Twister123");
-    //WiFi.begin("MiFibra-2D81", "jJAML2Mc");
+    delay(50); // Wait for serial
+    // WiFi.begin("HDO_IoT", "Twister123");
+    // WiFi.begin("MiFibra-2D81", "jJAML2Mc");
     WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
     Serial.println("Conecting to WIFI:");
 }
 
 void loop()
-{   
+{
     bool complete = wifi_connected && time_set && mqtt_connected;
-    
-    EVERY_N_SECONDS(1) 
+
+    EVERY_N_SECONDS(1)
     {
-        // if condition checks if push button is pressed    
+        // if condition checks if push button is pressed
         int wifi_provisioning = digitalRead(0);
 
         // if pressed user wants to setup WiFi
-        if ( wifi_provisioning == LOW )
+        if (wifi_provisioning == LOW)
         {
-            switch(state)
+            switch (state)
             {
-                case NORMAL:
-                    state = ani_startup_state::WIFI_SETUP;
-                    break;
-                case WIFI_SETUP:
-                    state = ani_startup_state::BLUETOOTH_SETUP;
-                    break;
-                case BLUETOOTH_SETUP:
-                    state = ani_startup_state::NORMAL;
-                    break;
+            case NORMAL:
+                state = ani_startup_state::WIFI_SETUP;
+                break;
+            case WIFI_SETUP:
+                state = ani_startup_state::BLUETOOTH_SETUP;
+                break;
+            case BLUETOOTH_SETUP:
+                state = ani_startup_state::NORMAL;
+                break;
             }
 
             Serial.print("Button Press");
             Serial.println();
             // Starts the wifi provisioning routine
-            //network.WiFiSetup();
+            // network.WiFiSetup();
         }
     }
 
@@ -122,7 +124,7 @@ void loop()
         }
 
         if (!time_set)
-        {    
+        {
             ntpClient.begin();
             ntpClient.update();
             setSyncProvider(getNTPTime);
@@ -132,9 +134,7 @@ void loop()
         if (!mqtt_client.connected())
         {
             mqtt_connected = false;
-            //EVERY_N_SECONDS(10) {
-                mqtt_reconnect();
-            //}
+            mqtt_reconnect();
         }
         else
         {
@@ -150,12 +150,13 @@ void loop()
 
     if (time_set)
     {
-        EVERY_N_MINUTES(60) {
+        EVERY_N_MINUTES(60)
+        {
             ntpClient.update();
         }
     }
 
-    if(state == ani_startup_state::NORMAL)
+    if (state == ani_startup_state::NORMAL)
     {
         if (complete)
         {
@@ -179,6 +180,6 @@ void loop()
     {
         display.setAnnimation(annimations::SETUP_BLUETOOTH);
     }
-    
+
     display.draw_frame();
 }

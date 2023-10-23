@@ -347,6 +347,9 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
             mqtt_report_animation();
         }
     }
+
+    // Anounce a message has been recieved
+    sound.beep();
 }
 
 void mqtt_report_config()

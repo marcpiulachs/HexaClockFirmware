@@ -15,6 +15,7 @@
 #include "display.h"
 #include "network.h"
 #include "config.h"
+#include "sound.h"
 
 enum ani_startup_state {
     NORMAL,
@@ -33,6 +34,7 @@ Network network;
 UsbPower usbPower;
 WiFiUDP ntpUDP;
 Display display;
+Sound sound;
 Sensors sensors(GPIO_NUM_21);
 
 NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);

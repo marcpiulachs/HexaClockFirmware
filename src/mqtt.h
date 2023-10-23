@@ -10,6 +10,7 @@
 #include "secret.h"
 #include "config.h"
 #include "sensors.h"
+#include "sound.h"
 
 #define def_mqtt_all_topic              "%s/#"
 #define def_mqtt_topics_on_off_power    "%s/power"
@@ -47,6 +48,7 @@ extern WiFiClient espClient;
 extern PubSubClient mqtt_client;
 extern Config config;
 extern Sensors sensors;
+extern Sound sound;
 
 extern void mqtt_begin();
 extern void mqtt_loop();
