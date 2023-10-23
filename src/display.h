@@ -42,7 +42,7 @@ class Display {
     public:
         Display();
         void setup();
-        void draw();
+        void draw_frame();
         void setAnnimation(annimations annimation);
         void setSpeed(byte speed);
         void setBrightness(byte brightness);

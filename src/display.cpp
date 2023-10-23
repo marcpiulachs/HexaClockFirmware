@@ -114,12 +114,12 @@ void Display::setAnnimation(annimations annimation)
 
         Serial.println();
         Serial.print("Animation set to : ");
-        Serial.print(this->animation->getType().c_str());
+        Serial.print(this->animation->getType());
         Serial.println();
     }
 }
 
-void Display::draw()
+void Display::draw_frame()
 {
     if (this->animation != NULL)
     {

@@ -4,6 +4,7 @@
 
 #include "mqtt.h"
 #include "esp_system.h"
+#include "sensors.h"
 
 char *mqtt_all_topic;
 char *mqtt_topics_on_off_power;
@@ -33,6 +34,7 @@ char *mqtt_reports_on_off_alarm;
 char *mqtt_reports_brightness;
 char *mqtt_reports_temp;
 char *mqtt_reports_time;
+char *mqtt_reports_speed;
 //char *mqtt_reports_hue;
 //char *mqtt_reports_sat;
 char *mqtt_reports_effect;
@@ -75,6 +77,8 @@ void create_mqtt_topics ()
     asprintf(&mqtt_reports_on_off_temp, def_mqtt_reports_on_off_temp, clientid);
     asprintf(&mqtt_reports_on_off_alarm, def_mqtt_reports_on_off_alarm, clientid);
     asprintf(&mqtt_reports_temp, def_mqtt_reports_temp, clientid);
+    asprintf(&mqtt_reports_temp, def_mqtt_reports_temp, clientid);
+    asprintf(&mqtt_reports_speed, def_mqtt_reports_speed, clientid);
 }
 
 void mqtt_begin()
@@ -242,61 +246,49 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
     if (strcmp(topic, mqtt_topics_on_off_power) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config.setIsOn(on);
-        report_on();
+        config.set_power_on(on);
+        mqtt_report_on();
     }
     else if (strcmp(topic, mqtt_topics_brightness) == 0)
     {
         uint8_t brightness = atoi((char *)payload);
-        config.setBrightness(brightness);
-        report_brightness();
+        config.set_brightness(brightness);
+        mqtt_report_brightness();
     }
     else if (strcmp(topic, mqtt_topics_temp) == 0)
     {
-        report_temp();
+        mqtt_report_temp();
     }
     else if (strcmp(topic, mqtt_topics_on_off_back) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config.setBackgroundOn(on);
-        report_background_on();
+        config.set_background_on(on);
+        mqtt_report_background_on();
     }
     else if (strcmp(topic, mqtt_topics_on_off_time) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config.setTimeOn(on);
-        report_time_on();
-        //mqtt_client.publish(mqtt_reports_on_off_time, on ? "on" : "off", true);
+        config.set_time_on(on);
+        mqtt_report_time_on();
     }
     else if (strcmp(topic, mqtt_topics_on_off_temp) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config.setTempOn(on);
-        report_temp_on();
-        //mqtt_client.publish(mqtt_reports_on_off_temp, on ? "on" : "off", true);
+        config.set_temp_on(on);
+        mqtt_report_temp_on();
     }
     else if (strcmp(topic, mqtt_topics_on_off_alarm) == 0)
     {
         bool on = strcmp((char *)payload, "on") == 0;
-        config.setAlarmOn(on);
-        report_alarm_on();
-        //mqtt_client.publish(mqtt_reports_on_off_alarm, on ? "on" : "off", true);
+        config.set_alarm_on(on);
+        mqtt_report_alarm_on();
     }
     else if (strcmp(topic, mqtt_topics_speed) == 0)
     {
         float speed = atoi((char *)payload);
         int speed_int = map((uint8_t)speed, 0, 100, 0, 255);
-        config.setSpeed(speed_int);
-        report_speed();
-        //mqtt_client.publish(mqtt_topics_speed, String(speed_int).c_str(), true);
-    }
-    else if (strcmp(topic, mqtt_topics_temp) == 0)
-    {
-        float speed = atoi((char *)payload);
-        int speed_int = map((uint8_t)speed, 0, 100, 0, 255);
-        config.setSpeed(speed_int);
-        report_speed();
-        //mqtt_client.publish(mqtt_topics_speed, String(speed_int).c_str(), true);
+        config.set_speed(speed_int);
+        mqtt_report_speed();
     }
     else if (strcmp(topic, mqtt_topics_effect) == 0)
     {
@@ -352,92 +344,71 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
         }
         else
         {
-            report_animation();
+            mqtt_report_animation();
         }
     }
 }
 
-/*
-void mqtt_report_float(const char* report, float value)
-{
-    char topic[64] = "";
-    sprintf(topic, "%s%s", clientid, report);
-    mqtt_client.publish(topic, String(value).c_str());
-}
-
-void mqtt_report_int(const char* report, int value)
-{
-    char topic[64] = "";
-    sprintf(topic, "%s%s", clientid, report);
-    mqtt_client.publish(topic, String(value).c_str());
-}
-
-void mqtt_report_string(const char* report, const char* value)
-{
-    char topic[64] = "";
-    sprintf(topic, "%s%s", clientid, report);
-    mqtt_client.publish(topic, String(value).c_str());
-}
-*/
-
 void mqtt_report_config()
 {
-    report_temp();
-    report_speed();
-    report_alarm_on();
-    report_temp_on();
-    report_on();
-    report_brightness();
-    report_time_on();
-    report_background_on();
-    report_animation();
+    mqtt_report_temp();
+    mqtt_report_speed();
+    mqtt_report_alarm_on();
+    mqtt_report_temp_on();
+    mqtt_report_on();
+    mqtt_report_brightness();
+    mqtt_report_time_on();
+    mqtt_report_background_on();
+    mqtt_report_animation();
 }
 
-void report_temp()
+void mqtt_report_temp()
+{
+    char value[16];
+    sprintf(value, "%f", sensors.getTemp());
+    mqtt_client.publish(mqtt_reports_temp, value, true);
+}
+
+void mqtt_report_speed()
 {
     char value[16];
     sprintf(value, "%d", (int)config.getSpeed());
-    mqtt_client.publish(mqtt_reports_temp,  value, true);
+    mqtt_client.publish(mqtt_reports_speed, value, true);
 }
 
-void report_speed()
+void mqtt_report_brightness()
 {
     char value[16];
-    sprintf(value, "%d", (int)config.getSpeed());
-    mqtt_client.publish(mqtt_topics_speed,  value, true);
+    sprintf(value, "%d", (int)config.getBrightness());    
+    mqtt_client.publish(mqtt_reports_brightness, value, true);
 }
 
-void report_alarm_on()
+void mqtt_report_alarm_on()
 {
     mqtt_client.publish(mqtt_reports_on_off_alarm, config.getAlarmOn() ? "on" : "off", true);
 }
 
-void report_temp_on()
+void mqtt_report_temp_on()
 {
     mqtt_client.publish(mqtt_reports_on_off_temp, config.getTempOn() ? "on" : "off", true);
 }
 
-void report_on()
+void mqtt_report_on()
 {
     mqtt_client.publish(mqtt_reports_on_off_power, config.getIsOn() ? "on" : "off", true);
 }
 
-void report_brightness()
+void mqtt_report_time_on()
 {
-    mqtt_client.publish(mqtt_reports_brightness, String(config.getBrightness()).c_str());
+    mqtt_client.publish(mqtt_reports_on_off_time, config.getTimeOn() ? "on" : "off", true);
 }
 
-void report_time_on()
-{
-    mqtt_client.publish(mqtt_reports_on_off_time, config.getTimeOn() ? "on" : "off");
-}
-
-void report_background_on()
+void mqtt_report_background_on()
 {
     mqtt_client.publish(mqtt_reports_on_off_back, config.getBackgroundOn() ? "on" : "off");
 }
 
-void report_animation()
+void mqtt_report_animation()
 {
     switch (config.getAnimation())
     {

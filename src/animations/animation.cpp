@@ -77,6 +77,20 @@ void Animation::fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& colo
     }
 }
 
+void Animation::fill_color_sprite(CRGB *buffer, const uint32_t sprite[120]) {
+    for (int y = 0; y < NUM_ROWS ; y++) {
+        for (int x = 0; x < NUM_COLS; x++) {
+            uint32_t pixel = sprite[x + (NUM_COLS * y)];
+            uint8_t red = (pixel >> 16) & 0xFF;
+            uint8_t green = (pixel >> 8) & 0xFF;
+            uint8_t blue = pixel & 0xFF;
+            //Serial.printf("%d. %08X, %02X %02X %02X", x + (NUM_COLS * y), pixel, red, green, blue);
+            //Serial.println();
+            buffer[XY(x, y)] = CRGB(green, red, blue);
+        }
+  }
+}
+
 void Animation::setSpeed(byte speed)
 {
     this->speed = speed;

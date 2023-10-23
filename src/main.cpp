@@ -11,7 +11,7 @@ bool forceTimeSync()
     setSyncInterval(0);
     time_t time = now();
     setSyncInterval(300);
-    const bool success = year(time) > 2019;
+    const bool success = year(time) > 2022;
     Serial.println(success ? "Successful" : "Failed");
     return success;
 }
@@ -39,6 +39,9 @@ void setup() {
     // firmware instead.
     digitalWrite(12, HIGH);
 
+    // Sensors
+    pinMode(GPIO_NUM_21, INPUT); 
+
     // Setup serial port
     Serial.begin(9600, SERIAL_8N1);
     Serial.println("HexaClock started");
@@ -49,7 +52,7 @@ void setup() {
     display.setAnnimation(annimations::STARTUP);
     display.setBrightness(config.config.brightness);
 
-    //sensors.begin();
+    sensors.begin();
 
     config.begin(true);
     //usbPower.begin();
@@ -59,9 +62,9 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(50); //Wait for serial
-    WiFi.begin("HDO_IoT", "Twister123");
+    //WiFi.begin("HDO_IoT", "Twister123");
     //WiFi.begin("MiFibra-2D81", "jJAML2Mc");
-    ///WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
+    WiFi.begin("MIWIFI_2G_muQJ", "WXYqHVYr");
     Serial.println("Conecting to WIFI:");
 }
 
@@ -129,9 +132,9 @@ void loop()
         if (!mqtt_client.connected())
         {
             mqtt_connected = false;
-            EVERY_N_SECONDS(10) {
+            //EVERY_N_SECONDS(10) {
                 mqtt_reconnect();
-            }
+            //}
         }
         else
         {
@@ -177,5 +180,5 @@ void loop()
         display.setAnnimation(annimations::SETUP_BLUETOOTH);
     }
     
-    display.draw();
+    display.draw_frame();
 }

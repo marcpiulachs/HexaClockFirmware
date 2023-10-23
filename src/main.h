@@ -33,10 +33,10 @@ Network network;
 UsbPower usbPower;
 WiFiUDP ntpUDP;
 Display display;
+Sensors sensors(GPIO_NUM_21);
 
 NTPClient ntpClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
-Sensors sensors(1);
 
 /* WiFi credentials */
 const char* ssid;

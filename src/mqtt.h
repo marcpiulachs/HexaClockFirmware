@@ -9,6 +9,7 @@
 #include <WiFiClient.h>
 #include "secret.h"
 #include "config.h"
+#include "sensors.h"
 
 #define def_mqtt_all_topic              "%s/#"
 #define def_mqtt_topics_on_off_power    "%s/power"
@@ -29,7 +30,6 @@
 #define def_mqtt_topics_time_minute     "%s/time/minute"
 //#define def_mqtt_topics_time_sync = "/time/sync";
 
-
 #define def_mqtt_reports_on_off_power   "%s/reports/onoff/power"
 #define def_mqtt_reports_on_off_back    "%s/reports/onoff/background"
 #define def_mqtt_reports_on_off_time    "%s/reports/onoff/time"
@@ -41,10 +41,12 @@
 //#define def_mqtt_reports_hue = "/reports/hue";
 //#define def_mqtt_reports_sat = "/reports/sat";
 #define def_mqtt_reports_effect         "%s/reports/effect"
+#define def_mqtt_reports_speed          "%s/reports/speed"
 
 extern WiFiClient espClient;
 extern PubSubClient mqtt_client;
 extern Config config;
+extern Sensors sensors;
 
 extern void mqtt_begin();
 extern void mqtt_loop();
@@ -57,14 +59,14 @@ extern void mqtt_callback(char* topic, byte* payload, unsigned int length);
 extern void mqtt_reconnect();
 extern void mqtt_report_config();
 
-void report_temp();
-void report_speed();
-void report_alarm_on();
-void report_temp_on();
-void report_on();
-void report_brightness();
-void report_time_on();
-void report_background_on();
-void report_animation();
+void mqtt_report_temp();
+void mqtt_report_speed();
+void mqtt_report_alarm_on();
+void mqtt_report_temp_on();
+void mqtt_report_on();
+void mqtt_report_brightness();
+void mqtt_report_time_on();
+void mqtt_report_background_on();
+void mqtt_report_animation();
 
 #endif //_MQTT_H

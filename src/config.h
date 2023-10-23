@@ -23,17 +23,14 @@
 
 typedef struct {
     char ssid[64];
-    char pass[64];
-} wifiCredentials_t;
-
-typedef struct {
-    uint8_t brightness = 5;
+    char pass[64];    
+    uint8_t brightness = 50;
     bool background = true;
     bool isOn = true;
-    bool temp;
+    bool temp = false;
     bool time = true;
     bool invert = false;
-    bool alarm;
+    bool alarm = false;
     uint8_t sat;
     uint8_t hue;
     byte animation = 8;
@@ -47,34 +44,33 @@ typedef struct {
 class Config
 {
 public:
-    wifiCredentials_t wifiCredentials;
     config_t config;
 
     void begin(bool force_reset);
     void reset();
 
     uint8_t getBrightness();
-    void setBrightness(uint8_t value);
+    void set_brightness(uint8_t value);
 
     bool getBackgroundOn();
-    void setBackgroundOn(bool value);
+    void set_background_on(bool value);
 
     bool getTimeOn();
-    void setTimeOn(bool value);
+    void set_time_on(bool value);
 
     bool getTempOn();
-    void setTempOn(bool value);
+    void set_temp_on(bool value);
 
     void setInvertOn(bool value);
 
     bool getAlarmOn();
-    void setAlarmOn(bool value);
+    void set_alarm_on(bool value);
 
     bool getIsOn();
-    void setIsOn(bool value);
+    void set_power_on(bool value);
 
     byte getSpeed();
-    void setSpeed(byte value);
+    void set_speed(byte value);
 
     annimations getAnimation();
     void setAnimation(annimations value);
@@ -83,8 +79,6 @@ public:
     void setColorHue(uint8_t value);
     uint8_t getColorSat();
     void setColorSat(uint8_t value);
-
-    void setSpeed(uint8_t value);
 
     void SaveCredentials();
     void ReadCredentials();

@@ -13,7 +13,7 @@ class Sensors {
     public:
         explicit Sensors(byte pin);
         void begin();
-        float getSensorTemp();
+        float getTemp();
     private:
         OneWire *oneWire;
         DallasTemperature *ds18b20;

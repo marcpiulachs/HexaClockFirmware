@@ -9,7 +9,8 @@ Sensors::Sensors(byte pin) {
     this->ds18b20 = new DallasTemperature(this->oneWire);
 }
 
-void Sensors::begin() {
+void Sensors::begin() 
+{
     this->ds18b20->begin();
 
     if (!this->ds18b20->getAddress(this->sensor, 0)){
@@ -18,16 +19,10 @@ void Sensors::begin() {
         #endif
     }
 
-    /*
-    if (!this->ds18b20->getAddress(this->temp_sensor2, 1)){
-        #ifdef DEBUG_HEXCLOCK
-            Serial.println("Unable to find address for Device 1");
-        #endif
-    }*/
-
     #ifdef DEBUG_HEXCLOCK
-        Serial.print("Device 0 Address: "); printAddress(this->sensor); Serial.println();
-     //   Serial.print("Device 1 Address: "); printAddress(this->temp_sensor2); Serial.println();
+        Serial.print("Device 0 Address: "); 
+        printAddress(this->sensor); 
+        Serial.println();
     #endif
 
     this->ds18b20->setResolution(this->sensor, TEMPERATURE_PRECISION);
@@ -35,7 +30,8 @@ void Sensors::begin() {
     this->ds18b20->requestTemperatures();
 }
 
-void Sensors::printAddress(uint8_t *address) {
+void Sensors::printAddress(uint8_t *address) 
+{
     for (uint8_t i = 0; i < 8; i++)
     {
         // zero pad the address if necessary
@@ -44,11 +40,13 @@ void Sensors::printAddress(uint8_t *address) {
     }
 }
 
-float Sensors::getSensorTemp() {
-    if (this->ds18b20->isConversionComplete()) {
+float Sensors::getTemp() 
+{
+    if (this->ds18b20->isConversionComplete()) 
+    {
         this->temperature = this->ds18b20->getTempC(this->sensor);
-       // this->temp2 = this->ds18b20->getTempC(this->temp_sensor2);
         this->ds18b20->requestTemperatures();
     }
+
     return this->temperature;
 }

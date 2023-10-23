@@ -56,6 +56,7 @@ class Animation
 
         byte XY(uint8_t x, uint8_t y);
         void fill_sprite(CRGB *buffer, const byte sprite[15],const CRGB& color, bool override);
+        void fill_color_sprite(CRGB *buffer, const uint32_t sprite[120]);
     public:
         Animation(const char *type)
         {
@@ -125,7 +126,7 @@ class Animation
             this->background = color;
         }
 
-        virtual string getType()
+        virtual const char* getType()
         {
             return type;
         }
